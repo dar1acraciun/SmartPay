@@ -1,0 +1,5 @@
+node_modules/
+view/
+__pycache__/
+*.pyc
+.env

@@ -36,10 +36,12 @@ services:
       timeout: 3s
       retries: 30
       start_period: 20s
+    volumes:
+      - ./files:/app/files
 
   init-db:
     build:
-      context: .
+      context: ./init-db
       dockerfile: Dockerfile
     depends_on:
       db:
