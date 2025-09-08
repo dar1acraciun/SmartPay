@@ -1,0 +1,20 @@
+# Web framework
+fastapi>=0.110
+
+# ASGI server (dev + prod)
+uvicorn[standard]>=0.27
+
+# Data validation (FastAPI uses Pydantic v2)
+pydantic>=2.6
+
+# Forms / file uploads
+python-multipart>=0.0.9
+
+# Static files if you ever serve assets from FastAPI (optional but handy)
+aiofiles>=23.2
+
+# For calling external APIs or writing integration tests (optional)
+httpx>=0.27
+
+# Enable CORS if your Vite dev server runs on a different port (comes via Starlette)
+# (No extra package needed—middleware is included with FastAPI)
