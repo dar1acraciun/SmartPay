@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from controller import router
-from fastapi.middleware.cors import CORSMiddleware  # presupunem că ai un fișier routes.py în controller/
+from fastapi.middleware.cors import CORSMiddleware
 
+from db import SessionLocal
 
 app = FastAPI()
 

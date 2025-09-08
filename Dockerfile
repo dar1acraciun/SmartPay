@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install --no-cache-dir fastapi uvicorn[standard] sqlalchemy aiosqlite
+RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8000
 
