@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from controller import routes
+from controller import router
 from fastapi.middleware.cors import CORSMiddleware  # presupunem că ai un fișier routes.py în controller/
 
 
@@ -14,6 +14,6 @@ app.add_middleware(
 )
 
 # Înregistrează rutele definite în controller/routes.py
-app.include_router(routes.router)
+app.include_router(router.router)
 
 # Pentru rulare locală cu: uvicorn app:app --reload
