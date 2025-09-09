@@ -1,0 +1,100 @@
+{
+  "overall": {
+    "features": [
+      {
+        "feature_name": "channel_type",
+        "feature_reason": "The transaction channel affects fraud risk and authentication strength, which are key drivers of interchange fees.",
+        "importance_normalized": "0.65"
+      },
+      {
+        "feature_name": "mc_cvv2_result_code",
+        "feature_reason": "CVV2 result indicates cardholder authenticity and fee risk.",
+        "importance_normalized": "0.20"
+      },
+      {
+        "feature_name": "mc_cross_border_indicator",
+        "feature_reason": "Cross-border transactions involve extra risks and costs, leading to higher interchange fees.",
+        "importance_normalized": "0.10"
+      },
+      {
+        "feature_name": "mc_ucaf_collection_indicator",
+        "feature_reason": "Advanced authentication can lower fraud risk and reduce interchange fees.",
+        "importance_normalized": "0.03"
+      },
+      {
+        "feature_name": "mc_eci_indicator",
+        "feature_reason": "ECI code reflects transaction security level, affecting interchange fees.",
+        "importance_normalized": "0.01"
+      },
+      {
+        "feature_name": "mcc_group",
+        "feature_reason": "Merchant category codes group transactions by business type, affecting interchange rates.",
+        "importance_normalized": "0.005"
+      },
+      {
+        "feature_name": "mc_pos_entry_mode",
+        "feature_reason": "How card data was entered affects fraud risk and interchange fee.",
+        "importance_normalized": "0.002"
+      },
+      {
+        "feature_name": "mc_avs_result_code",
+        "feature_reason": "Address verification results help assess fraud risk, influencing the interchange fee applied.",
+        "importance_normalized": "0.001"
+      }
+    ]
+  },
+  "per_transaction": [
+    {
+      "transaction_index": "0",
+      "predicted_fee": "2.20",
+      "actual_fee": "2.90",
+      "downgrade": true,
+      "transaction_features": [
+        {
+          "feature_name": "channel_type",
+          "feature_value": "ecommerce",
+          "feature_reason": "E-commerce transaction: higher fraud risk, higher interchange.",
+          "importance_normalized": "0.70"
+        },
+        {
+          "feature_name": "mc_cvv2_result_code",
+          "feature_value": "U",
+          "feature_reason": "CVV2 not provided: issuer loses a key fraud detection tool, increasing expected losses and interchange.",
+          "importance_normalized": "0.15"
+        },
+        {
+          "feature_name": "mc_cross_border_indicator",
+          "feature_value": "False",
+          "feature_reason": "Domestic transaction: lower fraud and operational complexity, lower interchange.",
+          "importance_normalized": "0.10"
+        }
+      ]
+    },
+    {
+      "transaction_index": "1",
+      "predicted_fee": "1.80",
+      "actual_fee": "2.00",
+      "downgrade": false,
+      "transaction_features": [
+        {
+          "feature_name": "mc_cross_border_indicator",
+          "feature_value": "True",
+          "feature_reason": "Cross-border transaction: higher fraud risk, higher interchange.",
+          "importance_normalized": "0.12"
+        },
+        {
+          "feature_name": "channel_type",
+          "feature_value": "card_present",
+          "feature_reason": "Card-present transaction: lower fraud risk, lower interchange.",
+          "importance_normalized": "0.60"
+        },
+        {
+          "feature_name": "mc_cvv2_result_code",
+          "feature_value": "M",
+          "feature_reason": "CVV2 matched: reduces fraud probability and lowers interchange fee.",
+          "importance_normalized": "0.18"
+        }
+      ]
+    }
+  ]
+}
