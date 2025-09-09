@@ -1,6 +1,7 @@
 
+import json
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Integer
 import uuid
 
 Base = declarative_base()
@@ -11,6 +12,7 @@ class File(Base):
     name = Column(String(255), nullable=False)
     path = Column(String(255),default="tbd")           # ex: /files/<file_id>.csv
     timestamp = Column(DateTime)
+    downgraded_transaction = Column(Integer, default=0)  
 
     def insert_file(self, session):
         session.add(self)
@@ -19,6 +21,17 @@ class File(Base):
         self.path = f"/files/{self.id}.csv"
         session.commit()
         return self
+       
+    def update_transaction(self, session, json):
+        def count_downgrade_from_json(json_data):
+            return sum(1 for tx in json_data.get("per_transaction", []) if tx.get("downgrade") is True)
+        count = self.count_downgrade_from_json(json)
+        self.downgraded_transaction = count
+        self.status = "processed"
+        session.commit()
+        return self
+    
+
 
     @staticmethod
     def get_file(session, file_id):

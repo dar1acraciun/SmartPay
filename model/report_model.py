@@ -36,3 +36,4 @@ class Report(Base):
             session.commit()
             return True
         return False
+    
