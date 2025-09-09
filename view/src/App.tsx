@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import InterQAdvisor from "./pages/InterQAdvisor";
 import ComplianceChecker from "./pages/ComplianceChecker";
 import NotFound from "./pages/NotFound";
+import InterchangeFeeReport from './pages/InterchangeFeeReport';
+
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,7 @@ const App = () => (
           <Route path="/compliance-checker" element={<ComplianceChecker />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
+          <Route path="/interchangeFee-report/:id" element={<InterchangeFeeReport />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
