@@ -1,9 +1,8 @@
 
-from sqlalchemy.ext.declarative import declarative_base
+from model.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey
 import uuid
 
-Base = declarative_base()
 
 class Report(Base):
     __tablename__ = "reports"

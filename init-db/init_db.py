@@ -1,27 +1,8 @@
 import os
 import pymysql
-from sqlalchemy import Integer, create_engine, Column, String, DateTime, ForeignKey
-from sqlalchemy.orm import declarative_base
-import datetime, uuid
-
-Base = declarative_base()
-
-class File(Base):
-    __tablename__ = 'files'
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String(255), nullable=False)
-    path = Column(String(255), nullable=False)           # ex: /files/<file_id>.csv
-    timestamp = Column(DateTime, nullable=False, default=datetime.datetime.now(datetime.timezone.utc))
-    downgraded_transaction = Column(Integer, default=0)
-    brand = Column(String(50), default="unknown")  # e.g., Visa, MasterCard, etc.
-
-class Report(Base):
-    __tablename__ = 'reports'
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    source_file_id = Column(String(36), ForeignKey('files.id'), nullable=False)  # id-ul fișierului sursă
-    path = Column(String(255), nullable=False)           # ex: /reports/<report_id>.csv
-    timestamp = Column(DateTime, nullable=False, default=datetime.datetime.now(datetime.timezone.utc))
-    brand = Column(String(50), default="unknown")  # e.g., Visa, MasterCard, etc.
+from sqlalchemy import create_engine
+from model.file_model import File, Base
+from model.report_model import Report
 
 def create_database_and_tables():
     db_host = os.getenv('MYSQL_HOST', 'db')
@@ -41,9 +22,9 @@ def create_database_and_tables():
 
     DATABASE_URL = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     engine = create_engine(DATABASE_URL, echo=True, future=True)
-    Base.metadata.drop_all(engine) 
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-    print("Report table ensured.")
+    print("File și Report tables ensured.")
 
 if __name__ == "__main__":
     create_database_and_tables()

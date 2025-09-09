@@ -30,13 +30,14 @@ async def generate_report_controller(source_id: str) -> str:
 
     session = SessionLocal()
     try:
+        base_path = os.path.join(os.path.dirname(__file__), '..', 'hackathon_mastercard_regressor')
         generate_shap_explanations(
-            model_path="xgb_model_interchange_fee_rate.pkl",
-            x_test_path="x_test.csv",
-            full_txn_path="mastercard_transactions.csv"
+            model_path=os.path.join(base_path, "xgb_model_interchange_fee_rate.pkl"),
+            x_test_path=os.path.join(base_path, "x_test.csv"),
+            full_txn_path=os.path.join(base_path, "mastercard_transactions.csv")
         )
 
-        report = Report(source_file=source_id, timestamp=datetime.utcnow())
+        report = Report(source_file=source_id, timestamp=datetime.datetime.now(datetime.timezone.utc))
         report.insert_report(session, brand="mastercard")
 
         return report.id

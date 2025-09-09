@@ -1,10 +1,9 @@
 
 import json
-from sqlalchemy.ext.declarative import declarative_base
+from model.base import Base
 from sqlalchemy import Column, String, DateTime, Integer
 import uuid
 
-Base = declarative_base()
 
 class File(Base):
     __tablename__ = "files"

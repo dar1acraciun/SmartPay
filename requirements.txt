@@ -31,3 +31,4 @@ joblib
 shap
 numpy
 xgboost
+scikit-learn
