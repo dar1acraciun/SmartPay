@@ -24,7 +24,7 @@ const App = () => (
           <Route path="/compliance-checker" element={<ComplianceChecker />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-          <Route path="/report/:id" element={<InterchangeFeeReport />} />
+          <Route path="/interchangeFee-report/:id" element={<InterchangeFeeReport />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

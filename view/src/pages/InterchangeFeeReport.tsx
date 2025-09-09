@@ -61,7 +61,7 @@ const InterchangeFeeReport: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`/report/${id}`, { signal: ac.signal });
+        const res = await fetch(`http://localhost:8000/reports/${id}`);
         if (!res.ok) throw new Error(`Request failed (${res.status})`);
         const json: ReportData = await res.json();
         setData(json);
