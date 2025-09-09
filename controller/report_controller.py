@@ -17,6 +17,7 @@ async def get_report_controller(report_id: str):
 			"id": report.id,
 			"source_file_id": getattr(report, "source_file_id", None),
 			"path": getattr(report, "path", None),
+			"brand": getattr(report, "brand", None),
 			"timestamp": str(getattr(report, "timestamp", ""))
 		}
 	except Exception as e:
@@ -37,6 +38,7 @@ async def get_all_reports_controller():
 				"id": r.id,
 				"source_file_id": getattr(r, "source_file_id", None),
 				"path": getattr(r, "path", None),
+				"brand": getattr(r, "brand", None),
 				"timestamp": str(getattr(r, "timestamp", ""))
 			} for r in reports
 		]

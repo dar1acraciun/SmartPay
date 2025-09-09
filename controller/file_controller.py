@@ -18,6 +18,8 @@ async def get_file(file_id: str):
             "id": file.id,
             "name": file.name,
             "path": file.path,
+            "brand": file.brand,
+            "downgraded_transaction": file.downgraded_transaction,
             "timestamp": str(file.timestamp)
         }
     except Exception as e:
@@ -34,6 +36,8 @@ async def get_all_files_controller():
                 "id": f.id,
                 "name": f.name,
                 "path": f.path,
+                "brand": f.brand,
+                "downgraded_transaction": f.downgraded_transaction,
                 "timestamp": str(f.timestamp)
             } for f in files
         ]
@@ -49,14 +53,13 @@ async def upload_file_controller(file: UploadFile = FastAPIFile(...)):
     session = SessionLocal()
     try:
         new_file = File(name=file.filename, timestamp=datetime.datetime.now(datetime.timezone.utc))
-        new_file.insert_file(session)
-        # id-ul este generat automat de SQLAlchemy
+        new_file.insert_file(session, brand="mastercard")
         file_path = os.path.join(UPLOAD_DIR, f"{new_file.id}.csv")
         with open(file_path, "wb") as f:
             f.write(await file.read())
         new_file.path = f"/files/{new_file.id}.csv"
         session.commit()  # salvează path-ul actualizat
         # returnează id-ul și path-ul cât timp sesiunea e deschisă
-        return {"message": "File uploaded", "file_id": new_file.id, "path": new_file.path}
+        return {"message": "File uploaded", "file_id": new_file.id, "path": new_file.path, "brand": new_file.brand, "downgraded_transaction": new_file.downgraded_transaction}
     finally:
         session.close()

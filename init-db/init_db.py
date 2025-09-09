@@ -13,6 +13,7 @@ class File(Base):
     path = Column(String(255), nullable=False)           # ex: /files/<file_id>.csv
     timestamp = Column(DateTime, nullable=False, default=datetime.datetime.now(datetime.timezone.utc))
     downgraded_transaction = Column(Integer, default=0)
+    brand = Column(String(50), default="unknown")  # e.g., Visa, MasterCard, etc.
 
 class Report(Base):
     __tablename__ = 'reports'
@@ -20,6 +21,7 @@ class Report(Base):
     source_file_id = Column(String(36), ForeignKey('files.id'), nullable=False)  # id-ul fișierului sursă
     path = Column(String(255), nullable=False)           # ex: /reports/<report_id>.csv
     timestamp = Column(DateTime, nullable=False, default=datetime.datetime.now(datetime.timezone.utc))
+    brand = Column(String(50), default="unknown")  # e.g., Visa, MasterCard, etc.
 
 def create_database_and_tables():
     db_host = os.getenv('MYSQL_HOST', 'db')

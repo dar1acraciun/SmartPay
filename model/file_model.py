@@ -13,12 +13,14 @@ class File(Base):
     path = Column(String(255),default="tbd")           # ex: /files/<file_id>.csv
     timestamp = Column(DateTime)
     downgraded_transaction = Column(Integer, default=0)  
+    brand = Column(String(50), default="unknown")  # e.g., Visa, MasterCard, etc.
 
-    def insert_file(self, session):
+    def insert_file(self, session, brand):
         session.add(self)
         session.commit()
         session.refresh(self)
         self.path = f"/files/{self.id}.csv"
+        self.brand = brand
         session.commit()
         return self
        

@@ -11,12 +11,14 @@ class Report(Base):
     source_file = Column(String(36), ForeignKey("files.id"), nullable=False)
     path = Column(String(255),default="tbd")           # ex: /reports/<report_id>.csv
     timestamp = Column(DateTime)
+    brand = Column(String(50), default="unknown")  # e.g., Visa, MasterCard, etc.
 
-    def insert_report(self, session):
+    def insert_report(self, session, brand):
         session.add(self)
         session.commit()
         session.refresh(self)
         self.path = f"/reports/{self.id}.csv"
+        self.brand = brand
         session.commit()
         return self
 
