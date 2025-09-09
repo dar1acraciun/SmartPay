@@ -1,8 +1,9 @@
 import os
 import pymysql
 from sqlalchemy import create_engine
-from model.file_model import File, Base
+from model.file_model import File
 from model.report_model import Report
+from model.base import Base
 
 def create_database_and_tables():
     db_host = os.getenv('MYSQL_HOST', 'db')
