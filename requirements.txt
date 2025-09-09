@@ -24,3 +24,10 @@ pymysql
 sqlalchemy
 cryptography
 python-multipart
+
+# ML specific
+pandas
+joblib
+shap
+numpy
+xgboost
