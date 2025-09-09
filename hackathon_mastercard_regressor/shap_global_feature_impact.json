@@ -1,0 +1,47 @@
+{
+  "overall": {
+    "features": [
+      {
+        "feature_name": "channel_type",
+        "feature_reason": "Card-present vs. card-not-present.",
+        "importance_normalized": "83.41999816894531"
+      },
+      {
+        "feature_name": "mc_avs_result_code",
+        "feature_reason": "AVS address match result.",
+        "importance_normalized": "0.10999999940395355"
+      },
+      {
+        "feature_name": "mc_cross_border_indicator",
+        "feature_reason": "Was it an international transaction?",
+        "importance_normalized": "7.150000095367432"
+      },
+      {
+        "feature_name": "mc_cvv2_result_code",
+        "feature_reason": "Result of CVV2 check.",
+        "importance_normalized": "5.099999904632568"
+      },
+      {
+        "feature_name": "mc_eci_indicator",
+        "feature_reason": "E-commerce security level.",
+        "importance_normalized": "0.8899999856948853"
+      },
+      {
+        "feature_name": "mc_pos_entry_mode",
+        "feature_reason": "How the card was entered (e.g., chip, manual).",
+        "importance_normalized": "0.09000000357627869"
+      },
+      {
+        "feature_name": "mc_ucaf_collection_indicator",
+        "feature_reason": "Was 3DS / UCAF used?",
+        "importance_normalized": "3.190000057220459"
+      },
+      {
+        "feature_name": "mcc_group",
+        "feature_reason": "Merchant category code group.",
+        "importance_normalized": "0.05000000074505806"
+      }
+    ]
+  },
+  "per_transaction": []
+}
