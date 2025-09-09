@@ -1,8 +1,5 @@
 import os
 import json
-from pathlib import Path
-from model.file_model import File
-from db import SessionLocal
 from fastapi import HTTPException
 from hackathon_mastercard_regressor.evaluate_model import generate_shap_explanations
 from model.report_model import Report
@@ -31,36 +28,42 @@ async def generate_report_controller(source_id: str) -> str:
     if not source_id:
         raise HTTPException(status_code=400, detail="Missing source_id")
 
+    # Caută fișierul CSV în folderul files
+    csv_path = os.path.join(os.path.dirname(__file__), '..', 'files', f'{source_id}.csv')
+    csv_path = os.path.abspath(csv_path)
+    if not os.path.exists(csv_path):
+        raise HTTPException(status_code=404, detail="Source CSV file not found")
 
-    BASE_DIR = Path(__file__).resolve().parent
-    session = SessionLocal()
-    file = File.get_file(session, source_id)
     try:
-        if file.brand == "mastercard":
-            pkg_dir = (BASE_DIR / ".." / "hackathon_mastercard_regressor").resolve()
-            from hackathon_mastercard_regressor.evaluate_model import generate_shap_explanations
-            generate_shap_explanations(
-                model_path=os.path.join(pkg_dir, "xgb_model_interchange_fee_rate.pkl"),
-                x_test_path=os.path.join(pkg_dir, "x_test.csv"),
-                full_txn_path=os.path.join(pkg_dir, "mastercard_transactions.csv")
-            )
-        elif file.brand == "visa":
-            pkg_dir = (BASE_DIR / ".." / "hackathon_visa_regressor").resolve()
-            from hackathon_visa_regressor.evaluate_model import generate_shap_explanations
-            generate_shap_explanations(
-                model_path=os.path.join(pkg_dir, "xgb_model_interchange_fee_rate.pkl"),
-                x_test_path=os.path.join(pkg_dir, "x_test.csv"),
-                full_txn_path=os.path.join(pkg_dir, "visa_transactions.csv")
-            )
+        import shutil
+        base_path = os.path.join(os.path.dirname(__file__), '..', 'hackathon_mastercard_regressor')
+        x_test_path = os.path.join(base_path, "x_test.csv")
+        # Copiază fișierul CSV sursă ca x_test.csv
+        shutil.copyfile(csv_path, x_test_path)
 
-        report = Report(source_file=source_id, timestamp=datetime.datetime.now(datetime.timezone.utc))
-        report.insert_report(session, brand="mastercard")
+        generate_shap_explanations(
+            model_path=os.path.join(base_path, "xgb_model_interchange_fee_rate.pkl"),
+            x_test_path=x_test_path,
+            full_txn_path=csv_path
+        )
 
-        return report.id
+        # Citește fișierul JSON generat (presupunem că se numește shap_per_transaction_only.json)
+        json_path = os.path.join(base_path, "shap_per_transaction_only.json")
+        if not os.path.exists(json_path):
+            return {"error": "JSON report file not found after generation."}
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # Salvează conținutul JSON în folderul reports cu numele <source_id>.json
+        reports_dir = os.path.join(os.path.dirname(__file__), '..', 'reports')
+        os.makedirs(reports_dir, exist_ok=True)
+        report_file_path = os.path.join(reports_dir, f"{source_id}.json")
+        with open(report_file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+        return {"success": True, "message": "Report JSON saved.", "file": f"{source_id}.json"}
     except Exception as e:
         return {"error": str(e)}
-    finally:
-        session.close()
 
 
 async def get_all_reports_controller():
