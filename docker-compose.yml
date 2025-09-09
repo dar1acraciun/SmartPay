@@ -38,18 +38,18 @@ services:
       start_period: 20s
     volumes:
       - ./files:/app/files
-      - .:/app
+      - ./reports:/app/reports
 
   init-db:
     build:
-      context: ./init-db
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: init-db/Dockerfile
     depends_on:
       db:
-        condition: service_healthy   # ✅ așteaptă healthcheck
+        condition: service_healthy
     environment:
       MYSQL_HOST: db
-      MYSQL_PORT: 3306               # în rețeaua Docker, portul intern e 3306
+      MYSQL_PORT: 3306
       MYSQL_USER: smartuser
       MYSQL_PASSWORD: smartpass
       MYSQL_DATABASE: smartpay
