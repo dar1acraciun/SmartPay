@@ -21,15 +21,15 @@ FEATURES_MASTERCARD = [
 ]
 
 FEATURES_VISA = [
-    "mc_pos_entry_mode",
-    "mc_eci_indicator",
-    "mc_ucaf_collection_indicator",
-    "mc_cvv2_result_code",
-    "mc_avs_result_code",
-    "mc_cross_border_indicator",
-    "mcc_group",
-    "channel_type",
-]
+        "visa_cross_border_indicator",  # binary categorical: 'Y' or 'N'
+        "visa_channel_type",  # categorical: 'ecommerce', 'card_present', etc.
+        "visa_eci_indicator",  # numeric or ordinal: integer (e.g., 2 to 7)
+        "visa_cvv2_result_code",  # categorical: 'M', 'N', 'U', etc.
+        "visa_avs_result_code",  # categorical: 'Y', 'N', 'A', 'Z', 'U', etc.
+        "visa_pos_entry_mode",  # numeric: e.g., 1 = manual, 5 = chip, 7 = contactless
+        "visa_terminal_capability_code",  # numeric: terminal risk profile (low = risky)
+        "visa_merchant_category_code",  # categorical: MCC code, can be grouped or one-hot
+    ]
     
 
 UPLOAD_DIR = "reports"
@@ -85,7 +85,7 @@ async def generate_report_controller(source_id: str) -> str:
         )
     elif file.brand.lower() == "visa":
         file_only_features = file_source[FEATURES_VISA]
-        base_path = os.path.join(os.path.dirname(__file__), '..', 'hackathon_mastercard_regressor')
+        base_path = os.path.join(os.path.dirname(__file__), '..', 'hackathon_visa_regressor')
         report_json = generate_shap_explanations(
             model_path=os.path.join(base_path, "xgb_model_interchange_fee_rate.pkl"),
             file_only_features=file_only_features,

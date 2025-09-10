@@ -6,11 +6,13 @@ import json
 from sklearn.inspection import permutation_importance
 
 
-def generate_shap_explanations(model_path, x_test_path, full_txn_path):
+def generate_shap_explanations(model_path, x_file, full_file):
     # === Load model and data ===
     model = joblib.load(model_path)
-    X_test = pd.read_csv(x_test_path)
-    df_txn = pd.read_csv(full_txn_path)
+    X_test = x_file
+    df_txn = full_file
+
+    print(x_file.head())
 
     y_pred = model.predict(X_test)
 
@@ -69,6 +71,8 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
                 "shap_total": impact
             })
 
+    print(shap_impact_list)
+
     # === Normalize SHAP values
     shap_impact_df = pd.DataFrame(shap_impact_list)
     shap_impact_df["shap_abs"] = shap_impact_df["shap_total"].abs()
@@ -94,8 +98,8 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
         "num__visa_pos_entry_mode": {"other": "How the card was entered (manual, chip, contactless)."},
         "num__visa_eci_indicator": {"other": "ECI indicates e-commerce security (lower = riskier)."},
         "num__visa_terminal_capability_code": {"other": "Device capability for fraud prevention (higher = better)."},
-        "num__visa_cross_border_indicator": {"True": "Transaction is cross-border: higher cost & risk.",
-                                             "False": "Domestic transaction: lower fee."},
+        "cat__visa_cross_border_indicator_Y": { "1.0":  "Transaction is cross-border: higher cost & risk."},
+        "cat__visa_cross_border_indicator_N": { "1.0": "Transaction is  not cross-border: lower cost & risk."},
         "num__visa_merchant_category_code": {"other": "Defines type of merchant (e.g., grocery, travel, gambling)."},
     }
 
@@ -111,25 +115,29 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
         "visa_merchant_category_code": "Merchant category code (defines merchant business type).",
     }
 
-    # === GLOBAL JSON — feature only
+    # === GLOBAL JSON — feature only (normalized, sorted)
     shap_feature_df = (
         shap_impact_df
         .groupby("feature", as_index=False)
         .agg({"shap_total": lambda x: np.sum(np.abs(x))})
         .rename(columns={"shap_total": "shap_abs"})
     )
-    shap_feature_df["shap_pct"] = (100 * shap_feature_df["shap_abs"] / shap_feature_df["shap_abs"].sum()).round(2)
-
+    total_overall = shap_feature_df["shap_abs"].sum()
+    norm_vals = [row["shap_abs"] / total_overall if total_overall else 0.0 for _, row in shap_feature_df.iterrows()]
+    rounded = [round(v, 2) for v in norm_vals]
+    diff = round(1.0 - sum(rounded), 2)
+    if rounded:
+        rounded[-1] += diff
     overall_features = []
-    for _, row in shap_feature_df.iterrows():
+    for i, (_, row) in enumerate(shap_feature_df.iterrows()):
         feature = row['feature']
-        pct = row['shap_pct']
         reason = feature_only_reasons.get(feature, "")
         overall_features.append({
             "feature_name": feature,
             "feature_reason": reason,
-            "importance_normalized": str(pct)
+            "importance_normalized": float(rounded[i])
         })
+    overall_features.sort(key=lambda x: x["importance_normalized"], reverse=True)
 
     global_json = {
         "overall": {
@@ -145,10 +153,12 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
         for _, row in shap_impact_df.iterrows()
     }
 
+
     per_transaction_json = []
     for idx in range(min(len(df_txn), len(shap_df))):
         row = df_txn.iloc[idx]
         txn_features = []
+        txn_importances = []
 
         for feat in FEATURES:
             if feat not in row:
@@ -159,30 +169,46 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
 
             if feat in categorical_features:
                 lookup_key = f"{feat}_{val_str}"
-                col_name = lookup_key
                 key = f"cat__{feat}_{val_str}"
                 reason = feature_reasons.get(key, {}).get("1.0", "")
             else:
                 lookup_key = f"{feat}_ALL"
-                col_name = feat
                 key = f"num__{feat}"
                 reason = feature_reasons.get(key, {}).get(str(val)) or feature_reasons.get(key, {}).get("other", "")
 
-            shap_val = shap_lookup_pct.get(lookup_key, 0.0)
-
+            shap_val = float(shap_lookup_pct.get(lookup_key, 0.0))
+            txn_importances.append(abs(shap_val))
             txn_features.append({
-                "feature_value_name": col_name,
+                "feature_name": feat,
+                "feature_value": val_str,
                 "feature_reason": reason,
-                "importance_normalized": round(float(shap_val), 2)
+                "importance_normalized": shap_val  # will normalize below
             })
 
+        # Normalize transaction feature importances to sum to exactly 1.0 (float, 2 decimals)
+        total_txn = sum(txn_importances)
+        norm_vals = [v / total_txn if total_txn else 0.0 for v in txn_importances]
+        rounded_txn = [round(v, 2) for v in norm_vals]
+        diff_txn = round(1.0 - sum(rounded_txn), 2)
+        if rounded_txn:
+            rounded_txn[-1] += diff_txn
+        for i, f in enumerate(txn_features):
+            f["importance_normalized"] = float(rounded_txn[i])
+        txn_features.sort(key=lambda x: x["importance_normalized"], reverse=True)
+
+        # Calculate downgrade (same logic as Mastercard: bool(row.get("downgrade", False)))
+        downgrade = bool(row.get("downgrade", False))
+
         currency = row.get("currency", "N/A")
+        actual_fee = row.get("fee_rate", "N/A")
+        predicted_fee = float(y_pred[idx])
 
         per_transaction_json.append({
             "transaction_index": int(idx),
             "currency": currency,
-            "actual_fee": row.get("fee_rate", "N/A"),
-            "predicted_fee": float(y_pred[idx]),
+            "actual_fee": actual_fee,
+            "predicted_fee": predicted_fee,
+            "downgrade": downgrade,
             "transaction_features": txn_features
         })
 
@@ -198,4 +224,6 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
 
     with open("shap_all_with_transactions.json", "w") as f:
         json.dump(merged_json, f, indent=2)
+
+    return merged_json
 

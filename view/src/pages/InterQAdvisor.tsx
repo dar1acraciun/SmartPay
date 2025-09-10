@@ -166,7 +166,40 @@ const InterQAdvisor = () => {
 
     try {
       // TODO: replace with real generate route and payload
-      await new Promise((r) => setTimeout(r, 1500));
+      const formData = new FormData();
+      formData.append("file", uploadedFile);
+
+      // You may want to store file_id in state after upload, but for now, try to get it from backend
+      // If you have file_id, use it here:
+      // Example: POST /reports/generate/{file_id}
+      // Replace 'file_id' with the actual ID
+      // If you have file_id in upload response, store it in state and use it here
+      // For now, let's assume you have a way to get file_id
+
+      // TODO: Replace with actual file_id from upload response
+      // For demonstration, let's fetch the last uploaded file from backend
+      // You may want to improve this logic for production
+      let fileId = null;
+      try {
+        const filesRes = await axios.get(`${API_BASE}/files/all`);
+        const files = filesRes?.data?.files ?? [];
+        if (files.length > 0) {
+          fileId = files[files.length - 1].id;
+        }
+      } catch {}
+
+      if (!fileId) {
+        toast({
+          title: "File ID not found",
+          description: "Could not determine uploaded file ID.",
+          variant: "destructive",
+        });
+        setGenerating(false);
+        return;
+      }
+
+      // Call the real generate endpoint
+      await axios.post(`${API_BASE}/reports/generate/${fileId}`);
 
       // After real generation completes server-side, re-fetch reports:
       await loadReports();

@@ -40,45 +40,15 @@ mastercard_fields = [
 ]
  
 visa_fields = [
-    "visa_mti",
-    "visa_processing_code",
-    "visa_acquirer_bin",
-    "visa_issuer_bin",
-    "visa_merchant_category_code",
-    "visa_merchant_country_code",
-    "visa_card_acceptor_id_code",
-    "visa_card_acceptor_name_location",
-    "visa_transaction_currency_code",
-    "visa_settlement_currency_code",
-    "visa_transaction_amount",
-    "visa_settlement_amount",
-    "visa_exchange_rate",
-    "visa_presentment_date",
-    "visa_pos_entry_mode",
-    "visa_eci_indicator",
-    "visa_cavv_result_code",
-    "visa_cvv2_result_code",
-    "visa_avs_result_code",
-    "visa_cross_border_indicator",
-    "visa_retrieval_reference_number",
-    "visa_auth_id_response",
-    "visa_arn",
-    "visa_interchange_fee",
-    "visa_rate_pct",
-    "visa_fixed_fee",
-    "visa_downgraded",
-    "visa_channel_type",
-    "merchant_name",
-    "issuer_country",
-    "visa_transaction_identifier",
-    "visa_product_code",
-    "visa_cvm_used",
-    "visa_pos_condition_code",
-    "visa_terminal_capability_code",
-    "visa_sca_exemption_reason",
-    "visa_region_code",
-    "visa_eci_3ds_auth"
-]
+        "visa_cross_border_indicator",  # binary categorical: 'Y' or 'N'
+        "visa_channel_type",  # categorical: 'ecommerce', 'card_present', etc.
+        "visa_eci_indicator",  # numeric or ordinal: integer (e.g., 2 to 7)
+        "visa_cvv2_result_code",  # categorical: 'M', 'N', 'U', etc.
+        "visa_avs_result_code",  # categorical: 'Y', 'N', 'A', 'Z', 'U', etc.
+        "visa_pos_entry_mode",  # numeric: e.g., 1 = manual, 5 = chip, 7 = contactless
+        "visa_terminal_capability_code",  # numeric: terminal risk profile (low = risky)
+        "visa_merchant_category_code",  # categorical: MCC code, can be grouped or one-hot
+    ]
  
  
 async def get_file(file_id: str):

@@ -1,4 +1,7 @@
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import pymysql
 from sqlalchemy import create_engine
 from model.file_model import File
@@ -13,8 +16,20 @@ def create_database_and_tables():
     db_password = os.getenv('MYSQL_PASSWORD', 'smartpass')
     db_name = os.getenv('MYSQL_DATABASE', 'smartpay')
 
-    # Ensure database exists (conectare ca userul aplicației)
-    conn = pymysql.connect(host=db_host, port=db_port, user=db_user, password=db_password)
+
+    # Retry loop: wait for MySQL to be ready
+    import time
+    max_attempts = 30
+    for attempt in range(max_attempts):
+        try:
+            conn = pymysql.connect(host=db_host, port=db_port, user=db_user, password=db_password)
+            break
+        except Exception as e:
+            print(f"[init-db] Attempt {attempt+1}/{max_attempts}: MySQL not ready ({e}), retrying in 2s...")
+            time.sleep(2)
+    else:
+        raise RuntimeError("[init-db] Could not connect to MySQL after waiting.")
+
     with conn.cursor() as cur:
         cur.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}`")
     conn.commit()
