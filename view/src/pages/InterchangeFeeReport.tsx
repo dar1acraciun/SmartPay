@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import {
@@ -44,7 +44,8 @@ type ReportData = {
 const InterchangeFeeReport: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const reportRef = useRef<HTMLDivElement>(null);
-
+  const [searchParams] = useSearchParams();
+  const autoDownload = searchParams.get("download") === "1";
   const [data, setData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +75,20 @@ const InterchangeFeeReport: React.FC = () => {
     return () => ac.abort();
   }, [id]);
 
+  useEffect(() => {
+  if (!autoDownload) return;
+  if (!data) return;                  // wait for API
+  if (!reportRef.current) return;     // wait for DOM
+
+  // Give the charts a beat to paint before snapshotting
+  const t = setTimeout(() => {
+    handleDownloadPDF();
+  }, 350);
+
+  return () => clearTimeout(t);
+}, [autoDownload, data]);
+
+
   /** ---- EXPORT PDF ---- */
   const handleDownloadPDF = async () => {
     if (!reportRef.current) return;
@@ -101,7 +116,7 @@ const InterchangeFeeReport: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center"
            style={{ backgroundColor: PALETTE.WHITE, color: PALETTE.CHARCOAL }}>
-        Se încarcă raportul...
+        Generating report...
       </div>
     );
   }
@@ -111,7 +126,7 @@ const InterchangeFeeReport: React.FC = () => {
            style={{ backgroundColor: PALETTE.WHITE }}>
         <div className="px-4 py-3 rounded-lg"
              style={{ color: PALETTE.WHITE, backgroundColor: PALETTE.ORANGE }}>
-          {error ?? "Nu s-au putut încărca datele raportului."}
+          {error ?? "Could not load report data."}
         </div>
       </div>
     );
@@ -151,7 +166,7 @@ const InterchangeFeeReport: React.FC = () => {
           className="mb-4 px-4 py-2 rounded-lg shadow hover:opacity-90 transition"
           style={{ backgroundColor: PALETTE.BLUE, color: PALETTE.WHITE }}
         >
-          Descarcă PDF
+          Download PDF
         </button>
       </div>
 

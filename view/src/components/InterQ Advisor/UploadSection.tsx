@@ -1,8 +1,21 @@
 import { useRef } from "react";
-import { Upload, Download, Info, Loader2, Check, ChevronDown, CreditCard, Lightbulb } from "lucide-react";
+import {
+  Upload,
+  Info,
+  Loader2,
+  Check,
+  ChevronDown,
+  CreditCard,
+  Lightbulb,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,22 +23,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface UploadSectionProps {
+export interface UploadSectionProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDownloadFormat: (type: 'visa' | 'mastercard') => void;
+  onDownloadFormat: (type: "visa" | "mastercard") => void;
   onGenerateReport: () => void;
   uploading?: boolean;
   generating?: boolean;
   uploadedFile?: File | null;
 }
 
-const UploadSection = ({ 
-  onFileUpload, 
-  onDownloadFormat, 
+const UploadSection = ({
+  onFileUpload,
+  onDownloadFormat,
   onGenerateReport,
   uploading = false,
   generating = false,
-  uploadedFile
+  uploadedFile,
 }: UploadSectionProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,9 +49,11 @@ const UploadSection = ({
           Need some transaction-related advice?
         </CardTitle>
         <p className="text-sm text-muted-foreground mt-2">
-          Upload your CSV file containing transaction data for analysis and optimization insights.
+          Upload your CSV file containing transaction data for analysis and
+          optimization insights.
         </p>
       </CardHeader>
+
       <CardContent className="pt-6">
         {!uploadedFile ? (
           // Initial upload state
@@ -58,7 +73,11 @@ const UploadSection = ({
               size="lg"
               disabled={uploading}
             >
-              {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+              {uploading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4" />
+              )}
               {uploading ? "Uploading…" : "Upload Transactions for Analysis"}
             </Button>
 
@@ -76,20 +95,21 @@ const UploadSection = ({
                     <ChevronDown className="h-4 w-4 ml-auto mt-0.5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem 
-                    onClick={() => onDownloadFormat('visa')}
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem
+                    onClick={() => onDownloadFormat("visa")}
                     className="flex items-center gap-2"
                   >
                     <CreditCard className="h-4 w-4" />
-                    Visa Format
+                    Visa Format (first column must start with <code>visa_</code>)
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => onDownloadFormat('mastercard')}
+                  <DropdownMenuItem
+                    onClick={() => onDownloadFormat("mastercard")}
                     className="flex items-center gap-2"
                   >
                     <CreditCard className="h-4 w-4" />
-                    Mastercard Format
+                    Mastercard Format (first column must start with{" "}
+                    <code>mc_</code>)
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -97,13 +117,21 @@ const UploadSection = ({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" disabled={uploading}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      disabled={uploading}
+                    >
                       <Info className="h-4 w-4 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="right" className="max-w-xs">
                     <p className="text-sm">
-                      Required CSV columns: transaction_id, amount, currency, merchant_category, card_type.
+                      <span className="font-medium">Important:</span> the first
+                      column name must indicate the brand (<code>mc_…</code> for
+                      Mastercard or <code>visa_…</code> for Visa). Your file
+                      must include the required headers for that brand.
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -145,7 +173,9 @@ const UploadSection = ({
                 size="lg"
                 disabled={generating}
               >
-                {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                {generating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : null}
                 {generating ? "Generating…" : "Generate Report"}
               </Button>
             </div>

@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ReportsHeader from "@/components/InterQ Advisor/ReportsHeader";
 import UploadSection from "@/components/InterQ Advisor/UploadSection";
 import ReportsTable from "@/components/InterQ Advisor/ReportsTable";
 import { toast } from "@/hooks/use-toast";
+
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
 type Status = "completed" | "processing" | "failed";
 
@@ -17,23 +20,95 @@ interface Report {
 }
 
 const InterQAdvisor = () => {
-  const [reports, setReports] = useState<Report[]>([
-    { id: "1", fileName: "transactions_march_2024.csv", date: "2024-03-15", downgradedTransactions: 42, status: "completed" },
-    { id: "2", fileName: "lol.csv",          date: "2024-03-10", downgradedTransactions: 28, status: "completed" },
-    { id: "3", fileName: "weekly_report_10.csv",         date: "2024-03-05", downgradedTransactions: 15, status: "completed" },
-    { id: "4", fileName: "february_batch.csv",           date: "2024-02-28", downgradedTransactions: 67, status: "completed" },
-    { id: "5", fileName: "te_rog_batch.csv",           date: "2024-02-28", downgradedTransactions: 67, status: "completed" },
-    { id: "6", fileName: "numesuperlungvaleuwow.csv",           date: "2024-02-28", downgradedTransactions: 67, status: "completed" },
-  ]);
-
+  const [reports, setReports] = useState<Report[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [searchTerm, setSearchTerm] = useState("");
+
+  // upload + generate state (drives UploadSection + table loading row)
   const [uploading, setUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [generating, setGenerating] = useState(false);
-  
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [reportsLoading, setReportsLoading] = useState(false);
+
+  // ---------------------------
+  // Helpers
+  // ---------------------------
+  const toYYYYMMDD = (ts?: string) => {
+    if (!ts) return "";
+    // Avoid timezone surprises: parse and take date portion
+    const d = new Date(ts);
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 10);
+  };
+
+  // Fetch a file by id to read downgraded_transaction (from your files controller)
+  const fetchFileMeta = async (fileId?: string | null) => {
+    if (!fileId) return 0;
+    try {
+      // assuming GET /files/{id}
+      const res = await axios.get(`${API_BASE}/files/${fileId}`);
+      const n =
+        res?.data?.downgraded_transaction ??
+        res?.data?.downgradedTransactions ??
+        0;
+      return typeof n === "number" ? n : Number(n) || 0;
+    } catch {
+      return 0;
+    }
+  };
+
+  // ---------------------------
+  // Load reports from backend
+  // ---------------------------
+  const loadReports = async () => {
+    setReportsLoading(true);
+    try {
+      const res = await axios.get(`${API_BASE}/reports/all`);
+      const raw = res?.data?.reports ?? [];
+
+      // Map to table rows + enrich with downgraded count from files/{source_file}
+      const rows: Report[] = await Promise.all(
+        raw.map(async (r: any) => {
+          // backend may return "source_file_id" or "source_file"
+          const sourceId = r?.source_file_id ?? r?.source_file ?? null;
+          const downgraded = await fetchFileMeta(sourceId);
+          return {
+            id: String(r.id),
+            fileName: String(r.id), // you asked to show the report id as the "file name"
+            date: toYYYYMMDD(r.timestamp),
+            downgradedTransactions: downgraded,
+            status: "completed",
+          };
+        })
+      );
+
+      // Default sort newest first (desc)
+      rows.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+      setReports(rows);
+      setCurrentPage(1);
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail || err?.message || "Load failed";
+      toast({
+        title: "Failed to load reports",
+        description: String(detail),
+        variant: "destructive",
+      });
+    } finally {
+      setReportsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ---------------------------
+  // Upload: parent owns API/state
+  // ---------------------------
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -43,34 +118,44 @@ const InterQAdvisor = () => {
         description: "Please upload a CSV file.",
         variant: "destructive",
       });
-      // reset input so same file can be selected again
       event.currentTarget.value = "";
       return;
     }
 
-    toast({
-      title: "File received",
-      description: `Processing ${file.name}…`,
-    });
+    const formData = new FormData();
+    formData.append("file", file);
+
     setUploading(true);
-
-    // ---- Mock processing (replace with real API later) ----
-    setTimeout(() => {
-      setUploadedFile(file);
-      setUploading(false);
-
-      toast({
-        title: "Uploaded successfully!",
-        description: "File is ready for report generation.",
+    try {
+      const res = await axios.post(`${API_BASE}/files/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // allow selecting the same file again if desired
-      event.currentTarget.value = "";
-    }, 2000);
-    // ------------------------------------------------------
+      const data = res.data; // { message, file_id, path, brand, downgraded_transaction }
+      setUploadedFile(file);
+
+      toast({
+        title: "Upload successful",
+        description: `Detected brand: ${data?.brand ?? "unknown"}. File saved.`,
+      });
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail || err?.message || "Upload failed";
+      toast({
+        title: "Upload failed",
+        description: String(detail),
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      event.currentTarget.value = ""; // allow same file again
+    }
   };
 
-  const handleGenerateReport = () => {
+  // ---------------------------
+  // Generate report (mock now)
+  // Later, call your POST generate endpoint, then reload reports
+  // ---------------------------
+  const handleGenerateReport = async () => {
     if (!uploadedFile) return;
 
     setGenerating(true);
@@ -79,47 +164,64 @@ const InterQAdvisor = () => {
       description: `Analyzing ${uploadedFile.name}…`,
     });
 
-    setTimeout(() => {
-      const newReport: Report = {
-        id: Date.now().toString(),
-        fileName: uploadedFile.name,
-        date: new Date().toISOString().split("T")[0],
-        downgradedTransactions: Math.floor(Math.random() * 100) + 1,
-        status: "completed",
-      };
-      setReports((prev) => [newReport, ...prev]);
-      setGenerating(false);
-      setUploadedFile(null); // Reset for next upload
-      setCurrentPage(1); // jump to first page so the new item is visible
+    try {
+      // TODO: replace with real generate route and payload
+      await new Promise((r) => setTimeout(r, 1500));
+
+      // After real generation completes server-side, re-fetch reports:
+      await loadReports();
 
       toast({
         title: "Analysis complete",
         description: "Your transaction analysis is ready.",
       });
-    }, 3000);
+      setUploadedFile(null);
+      setCurrentPage(1);
+    } finally {
+      setGenerating(false);
+    }
   };
-  
+
+  // ---------------------------
+  // Sort toggle
+  // ---------------------------
   const handleSortToggle = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    setReports((prev) =>
+      [...prev].sort((a, b) =>
+        sortOrder === "asc"
+          ? a.date > b.date ? 1 : a.date < b.date ? -1 : 0
+          : a.date < b.date ? 1 : a.date > b.date ? -1 : 0
+      )
+    );
     setCurrentPage(1);
   };
-  
-  const handleDownloadFormat = (type: 'visa' | 'mastercard') => {
-    // Different CSV templates for Visa and Mastercard
-    const visaCsvContent = 
-      "transaction_id,amount,currency,merchant_category,card_type,visa_interchange_category,visa_qualification\n" +
-      "1,100.50,USD,5411,credit,CPS/Retail,Qualified\n" +
-      "2,25.00,USD,5812,debit,CPS/Small Ticket,Basic\n" +
-      "3,75.25,USD,5541,credit,CPS/Supermarket,Standard";
-    
-    const mastercardCsvContent = 
-      "transaction_id,amount,currency,merchant_category,card_type,mastercard_product_type,mastercard_rate_type\n" +
-      "1,100.50,USD,5411,credit,World Elite,Enhanced\n" +
-      "2,25.00,USD,5812,debit,Standard,Basic\n" +
-      "3,75.25,USD,5541,credit,World,Standard";
 
-    const csvContent = type === 'visa' ? visaCsvContent : mastercardCsvContent;
-    const blob = new Blob([csvContent], { type: "text/csv" });
+  // CSV templates (headers match backend validators)
+  const mastercardFields = [
+    "mc_mti","mc_processing_code","mc_acquirer_bin","mc_issuer_bin","mc_merchant_category_code",
+    "mc_merchant_country_code","mc_card_acceptor_id_code","mc_card_acceptor_name_location",
+    "mc_transaction_currency_code","mc_settlement_currency_code","mc_transaction_amount","mc_settlement_amount",
+    "mc_exchange_rate","mc_presentment_date","mc_pos_entry_mode","mc_eci_indicator","mc_ucaf_collection_indicator",
+    "mc_cvv2_result_code","mc_avs_result_code","mc_cross_border_indicator","mc_retrieval_reference_number",
+    "mc_auth_id_response","interchange_fee","rate_pct","fixed_fee","mcc_group","downgraded","channel_type",
+    "cross_border_flag","eci_3ds_auth"
+  ];
+  const visaFields = [
+    "visa_mti","visa_processing_code","visa_acquirer_bin","visa_issuer_bin","visa_merchant_category_code",
+    "visa_merchant_country_code","visa_card_acceptor_id_code","visa_card_acceptor_name_location",
+    "visa_transaction_currency_code","visa_settlement_currency_code","visa_transaction_amount","visa_settlement_amount",
+    "visa_exchange_rate","visa_presentment_date","visa_pos_entry_mode","visa_eci_indicator","visa_cavv_result_code",
+    "visa_cvv2_result_code","visa_avs_result_code","visa_cross_border_indicator","visa_retrieval_reference_number",
+    "visa_auth_id_response","visa_arn","visa_interchange_fee","visa_rate_pct","visa_fixed_fee","visa_downgraded",
+    "visa_channel_type","merchant_name","issuer_country","visa_transaction_identifier","visa_product_code",
+    "visa_cvm_used","visa_pos_condition_code","visa_terminal_capability_code","visa_sca_exemption_reason",
+    "visa_region_code","visa_eci_3ds_auth"
+  ];
+
+  const handleDownloadFormat = (type: "visa" | "mastercard") => {
+    const header = (type === "visa" ? visaFields : mastercardFields).join(",");
+    const blob = new Blob([header + "\n"], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -129,22 +231,53 @@ const InterQAdvisor = () => {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   };
-  
+
   const handleOpenReport = (reportId: string) => {
-    toast({
-      title: "Opening report",
-      description: `Report ${reportId} will open in a new tab (stub).`,
-    });
-    // window.open(`/reports/${reportId}`, "_blank"); // real route later
-  };
+  if (!reportId) return;
+  window.open(`/interchangeFee-report/${encodeURIComponent(reportId)}`, "_blank", "noopener,noreferrer");
+};
 
   const handleDownloadReport = (reportId: string) => {
-    toast({
-      title: "Exporting report (PDF)",
-      description: `Starting download for report ${reportId} (stub).`,
-    });
-    // trigger real download later
+  if (!reportId) return;
+
+  // Create a hidden iframe that loads the report page with auto-download enabled.
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "absolute";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "0";
+  iframe.style.left = "-9999px";
+  iframe.src = `/interchangeFee-report/${encodeURIComponent(
+    reportId
+  )}?download=1&embed=1`;
+
+  // Cleanup when the iframe tells us it’s done
+  const onMsg = (e: MessageEvent) => {
+    if (e?.data === "report-pdf-ready") {
+      window.removeEventListener("message", onMsg);
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+    }
   };
+  window.addEventListener("message", onMsg);
+
+  // Fallback cleanup in case something goes wrong (20s)
+  const timer = setTimeout(() => {
+    window.removeEventListener("message", onMsg);
+    if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+  }, 20000);
+
+  // If cleanup ran normally, ensure timer is cleared
+  const clear = () => clearTimeout(timer);
+  window.addEventListener("message", function once(e) {
+    if (e?.data === "report-pdf-ready") {
+      window.removeEventListener("message", once as any);
+      clear();
+    }
+  });
+
+  document.body.appendChild(iframe);
+};
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -153,7 +286,6 @@ const InterQAdvisor = () => {
         <div className="container mx-auto px-6 max-w-7xl">
           <ReportsHeader />
 
-          {/* Upload with loading state */}
           <UploadSection
             onFileUpload={handleFileUpload}
             onDownloadFormat={handleDownloadFormat}
@@ -163,7 +295,6 @@ const InterQAdvisor = () => {
             uploadedFile={uploadedFile}
           />
 
-          {/* Table with pagination + loading row */}
           <ReportsTable
             reports={reports}
             searchTerm={searchTerm}
@@ -174,7 +305,7 @@ const InterQAdvisor = () => {
             setCurrentPage={setCurrentPage}
             onOpenReport={handleOpenReport}
             onDownloadReport={handleDownloadReport}
-            loading={generating}
+            loading={reportsLoading || generating}
             perPage={5}
           />
         </div>
