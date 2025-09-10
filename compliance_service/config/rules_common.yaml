@@ -1,0 +1,84 @@
+edition: "2025-04"
+severity_scale: {LOW: 1, MEDIUM: 2, HIGH: 3, CRITICAL: 4}
+
+rules:
+  - id: C1_SCA_REQUIRED_NOT_APPLIED
+    title: "SCA required but not applied (EU/UK e-commerce)"
+    when: "is_eu_uk and is_ecom and sca_required == True and sca_applied == False"
+    severity: HIGH
+    message: "PSD2/UK SCA was required for this e-commerce transaction but was not applied."
+    remediation: "Apply 3-D Secure or document a valid exemption (LVA/MOTO/MIT/TRA)."
+    impact_hint_bps: 10
+
+  - id: C2_ECOM_NO_AVS
+    title: "e-commerce without AVS"
+    when: "is_ecom and avs_used == False"
+    severity: MEDIUM
+    message: "AVS was not used on this e-commerce transaction, increasing downgrade risk."
+    remediation: "Enable AVS on e-commerce authorizations."
+    impact_hint_bps: 5
+
+  - id: C3_LATE_CLEARING
+    title: "Late clearing (processing-integrity risk)"
+    when: "(is_pos and settlement_delay_hours > cfg_pos_hours) or ((not is_pos) and settlement_delay_hours > cfg_cnp_hours)"
+    severity: MEDIUM
+    message: "Clearing/presentment occurred later than recommended windows."
+    remediation: "Capture/clear within recommended windows; optimize batch scheduling."
+    impact_hint_per_item: 0.045
+
+  - id: C4_COMM_ENHANCED_NOT_VALIDATED
+    title: "Commercial enhanced data present but not validated"
+    when: "is_commercial and enhanced_fields_present == True and enhanced_validated == False"
+    severity: MEDIUM
+    message: "Commercial enhanced fields were sent but not validated; better categories may be lost."
+    remediation: "Provide and validate invoice_no, tax_amount, customer_code, commodity_code."
+    impact_hint_bps: 40
+
+  - id: C5_COMM_ENHANCED_MISSING
+    title: "Commercial enhanced data missing"
+    when: "is_commercial and enhanced_fields_present == False"
+    severity: MEDIUM
+    message: "Commercial enhanced data is missing; likely downgrade from commercial programs."
+    remediation: "Integrate ERP/OMS to send required enhanced data."
+    impact_hint_bps: 60
+
+  - id: C6_CROSSBORDER_MISMATCH
+    title: "Cross-border flag mismatch"
+    when: "issuer_known == True and cross_border != cross_border_calc"
+    severity: LOW
+    message: "Cross-border flag is inconsistent with card country vs. merchant country."
+    remediation: "Compute cross_border from card and merchant countries and align flags."
+    impact_hint_bps: 2
+
+
+  - id: C7_MOTO_INFO
+    title: "MOTO is typically out-of-scope for SCA (informational)"
+    when: "is_moto"
+    severity: LOW
+    message: "Mail/Telephone Order is generally out-of-scope for SCA; verify tagging."
+    remediation: "Ensure MOTO transactions are not tagged as e-commerce."
+    impact_hint_bps: 0
+
+  - id: C8_MIT_FLAG_MISSING
+    title: "MIT/COF expected but flag missing"
+    when: "mit_expected == True and mit_indicator == False"
+    severity: MEDIUM
+    message: "Merchant-initiated transaction expected but MIT/COF indicator is missing."
+    remediation: "Send correct COF/MIT flag (initial/subsequent) on authorization."
+    impact_hint_bps: 3
+
+  - id: C9_ECOM_NO_3DS_DOMESTIC_EU
+    title: "EU domestic e-commerce without 3DS evidence"
+    when: "is_ecom and is_eu_uk and issuer_eu_uk == True and eci_strength == 'NONE'"
+    severity: MEDIUM
+    message: "Domestic EU/UK e-commerce without 3DS (ECI 05/06) evidence."
+    remediation: "Adopt 3-D Secure 2 for domestic traffic; ensure ECI is passed correctly."
+    impact_hint_bps: 8
+
+  - id: C10_ECOM_NON3DS_AVS_MISSING
+    title: "Non-3DS e-commerce without AVS"
+    when: "is_ecom and eci_strength == 'NONE' and avs_used == False"
+    severity: MEDIUM
+    message: "Neither 3DS nor AVS used on e-commerce transaction; downgrade risk increases."
+    remediation: "Enable AVS when 3DS is not available."
+    impact_hint_bps: 10

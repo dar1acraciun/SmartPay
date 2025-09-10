@@ -1,0 +1,16 @@
+rules:
+  - id: V1_CPS_ECOM_AVS_3DS
+    title: "Visa CPS eCommerce – AVS/3DS criteria"
+    when: "brand == 'Visa' and is_ecom and (avs_used == False or eci_strength not in ['STRONG','ATTEMPT'])"
+    severity: MEDIUM
+    message: "Does not meet Visa CPS eCommerce criteria for preferred rates (missing AVS and/or adequate 3DS evidence)."
+    remediation: "Enable AVS and 3-D Secure; submit 3DS results correctly in authorization."
+    impact_hint_bps: 12
+
+  - id: V2_CEDP_COMM_NOT_VALIDATED
+    title: "Visa Commercial (CEDP) – data not validated"
+    when: "brand == 'Visa' and is_commercial and enhanced_validated == False"
+    severity: MEDIUM
+    message: "CEDP: commercial enhanced data is not validated; standard rates likely apply."
+    remediation: "Complete and validate invoice/tax/line-items per CEDP requirements."
+    impact_hint_bps: 35
