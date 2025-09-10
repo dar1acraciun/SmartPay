@@ -74,7 +74,6 @@ const InterchangeFeeReport: React.FC = () => {
         if (!res.ok) throw new Error(`Request failed (${res.status})`);
         const json: ReportData = await res.json();
         setData(json);
-        console.log(data.overall.features[0].feature_name);
       } catch (e: any) {
         if (e.name !== "AbortError")
           setError(e.message || "Eroare la încărcare.");
@@ -172,13 +171,6 @@ const InterchangeFeeReport: React.FC = () => {
     name.replace(/mc_|_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   // Top feature for the "Primary Driver" tile
-  const topFeature = data.overall.features[0];
-  const topFeatureName = topFeature
-    ? formatFeatureName(topFeature.feature_name)
-    : "—";
-  const topFeaturePct = topFeature
-    ? (parseFloat(topFeature.importance_normalized) * 100).toFixed(1)
-    : "0.0";
 
   /** ---- RENDER ---- */
   return (
@@ -254,7 +246,15 @@ const InterchangeFeeReport: React.FC = () => {
                 className="text-lg font-bold"
                 style={{ color: PALETTE.ORANGE }}
               >
-                {topFeatureName} ({topFeaturePct}%)
+                {data?.overall?.features?.[0]?.feature_name} (
+                {data?.overall?.features?.[0]?.importance_normalized
+                  ? (
+                      parseFloat(
+                        data.overall.features[0].importance_normalized
+                      ) * 100
+                    ).toFixed(1)
+                  : "0.0"}
+                % )
               </p>
             </div>
           </div>
