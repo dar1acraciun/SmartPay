@@ -195,12 +195,10 @@ def generate_shap_explanations(model_path, x_file, full_file):
 
             shap_val = shap_lookup_pct.get(lookup_key, 0.0)
 
-            txn_features.append({
-                "feature_name": feat,
-                "feature_value": val_str,
-                "feature_reason": reason,
-                "importance_normalized": round(float(shap_val) / 100.0, 4)
-            })
+        # Normalize per-transaction feature importances by absolute value
+        abs_sum = sum(abs(txn_feat["importance_normalized"]) for txn_feat in txn_features) if txn_features else 1.0
+        for txn_feat in txn_features:
+            txn_feat["importance_normalized"] = round(abs(txn_feat["importance_normalized"]) / abs_sum, 4) if abs_sum != 0 else 0.0
 
         # Use actual_fee from the correct column (try 'actual_fee', fallback to 'fee_rate', fallback to predicted_fee)
         actual_fee = row.get("fee_rate")
