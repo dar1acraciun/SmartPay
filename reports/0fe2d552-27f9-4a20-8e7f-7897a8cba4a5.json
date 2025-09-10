@@ -1,0 +1,964 @@
+{
+  "per_transaction": [
+    {
+      "transaction_index": 0,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 1,
+      "currency": "GBP",
+      "rate_pct": "2.20%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_N",
+          "feature_reason": "CVV2 did not match (N)...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_A",
+          "feature_reason": "AVS partial match (A)...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present)...",
+          "importance_normalized": 8.02
+        }
+      ]
+    },
+    {
+      "transaction_index": 2,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 2.3978073596954346,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 3,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 2.2013185024261475,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 4,
+      "currency": "USD",
+      "rate_pct": "1.50%",
+      "predicted_fee": 2.398831844329834,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 5,
+      "currency": "USD",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 6,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 7,
+      "currency": "USD",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 8,
+      "currency": "CAD",
+      "rate_pct": "2.20%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_U",
+          "feature_reason": "CVV2 not provided/available (U)...",
+          "importance_normalized": 0.06
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present)...",
+          "importance_normalized": 8.02
+        }
+      ]
+    },
+    {
+      "transaction_index": 9,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 10,
+      "currency": "EUR",
+      "rate_pct": "2.20%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_U",
+          "feature_reason": "CVV2 not provided/available (U)...",
+          "importance_normalized": 0.06
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_A",
+          "feature_reason": "AVS partial match (A)...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present)...",
+          "importance_normalized": 8.02
+        }
+      ]
+    },
+    {
+      "transaction_index": 11,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 12,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 13,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 14,
+      "currency": "RON",
+      "rate_pct": "2.20%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_U",
+          "feature_reason": "CVV2 not provided/available (U)...",
+          "importance_normalized": 0.06
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_U",
+          "feature_reason": "AVS not provided (U)...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present)...",
+          "importance_normalized": 8.02
+        }
+      ]
+    },
+    {
+      "transaction_index": 15,
+      "currency": "EUR",
+      "rate_pct": "1.85%",
+      "predicted_fee": 2.3989105224609375,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_N",
+          "feature_reason": "AVS did not match (N)...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present)...",
+          "importance_normalized": 8.02
+        }
+      ]
+    },
+    {
+      "transaction_index": 16,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 17,
+      "currency": "GBP",
+      "rate_pct": "2.20%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_U",
+          "feature_reason": "CVV2 not provided/available (U)...",
+          "importance_normalized": 0.06
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present)...",
+          "importance_normalized": 8.02
+        }
+      ]
+    },
+    {
+      "transaction_index": 18,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    },
+    {
+      "transaction_index": 19,
+      "currency": "EUR",
+      "rate_pct": "1.50%",
+      "predicted_fee": 1.5000977516174316,
+      "transaction_features": [
+        {
+          "feature_value_name": "mc_pos_entry_mode",
+          "feature_reason": "This POS entry mode...",
+          "importance_normalized": 0.09
+        },
+        {
+          "feature_value_name": "mc_eci_indicator",
+          "feature_reason": "Special ECI...",
+          "importance_normalized": 0.89
+        },
+        {
+          "feature_value_name": "mc_ucaf_collection_indicator",
+          "feature_reason": "Special UCAF setting...",
+          "importance_normalized": 3.19
+        },
+        {
+          "feature_value_name": "mc_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M)...",
+          "importance_normalized": 5.01
+        },
+        {
+          "feature_value_name": "mc_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y)...",
+          "importance_normalized": 0.04
+        },
+        {
+          "feature_value_name": "mc_cross_border_indicator",
+          "feature_reason": "",
+          "importance_normalized": 7.15
+        },
+        {
+          "feature_value_name": "mcc_group_other",
+          "feature_reason": "Other merchant type...",
+          "importance_normalized": 0.0
+        },
+        {
+          "feature_value_name": "channel_type_card_present",
+          "feature_reason": "Card-present...",
+          "importance_normalized": 75.4
+        }
+      ]
+    }
+  ]
+}

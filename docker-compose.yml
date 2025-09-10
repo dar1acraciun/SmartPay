@@ -39,6 +39,7 @@ services:
     volumes:
       - ./files:/app/files
       - ./reports:/app/reports
+      - .:/app 
 
   init-db:
     build:

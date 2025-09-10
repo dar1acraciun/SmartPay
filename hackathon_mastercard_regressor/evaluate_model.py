@@ -6,11 +6,11 @@ import json
 from sklearn.inspection import permutation_importance
 
 
-def generate_shap_explanations(model_path, x_test_path, full_txn_path):
+def generate_shap_explanations(model_path, file_only_features, file_source):
     # === Load model and data ===
     model = joblib.load(model_path)
-    X_test = pd.read_csv(x_test_path)
-    df_txn = pd.read_csv(full_txn_path)
+    X_test = file_only_features
+    df_txn = file_source
 
     y_pred = model.predict(X_test)
 
@@ -158,17 +158,17 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
 
     # === Feature-level reasons (for global overview)
     feature_only_reasons = {
-        "mc_pos_entry_mode": "How the card was entered (e.g., chip, manual).",
-        "mc_eci_indicator": "E-commerce security level.",
-        "mc_ucaf_collection_indicator": "Was 3DS / UCAF used?",
-        "mc_cvv2_result_code": "Result of CVV2 check.",
-        "mc_avs_result_code": "AVS address match result.",
-        "mc_cross_border_indicator": "Was it an international transaction?",
-        "mcc_group": "Merchant category code group.",
-        "channel_type": "Card-present vs. card-not-present."
-    }
+    "mc_pos_entry_mode": "The way the card is entered affects fraud risk and fee tier—EMV chip or contactless usually qualifies for lower card-present interchange, while magstripe fallback or manual key entry often causes downgrades to higher fees.",
+    "mc_eci_indicator": "The e-commerce security level determines eligibility for secure vs. non-secure programs—authenticated 3-D Secure (high ECI) lowers interchange, while low/no ECI often triggers higher non-secure rates.",
+    "mc_ucaf_collection_indicator": "Use of UCAF/3-D Secure data helps qualify for secure e-commerce interchange with reduced fees, while missing UCAF typically results in more expensive standard e-commerce rates.",
+    "mc_cvv2_result_code": "Passing CVV2 in card-not-present transactions supports lower interchange by meeting security requirements, while absent or failed CVV2 checks often force a downgrade to higher-fee categories.",
+    "mc_avs_result_code": "Submitting and matching AVS data (address verification) helps card-not-present transactions qualify for lower interchange, whereas no or poor match results commonly increase the fee.",
+    "mc_cross_border_indicator": "Domestic transactions qualify for local interchange programs with lower fees, while cross-border transactions almost always incur higher interchange and additional assessments.",
+    "mcc_group": "The merchant category code defines the base interchange program—preferred sectors like grocery, fuel, charity, or transit often have reduced rates, while higher-risk or standard retail MCCs carry higher fees.",
+    "channel_type": "Card-present transactions generally receive lower interchange due to reduced fraud risk, while card-not-present channels (e-commerce, mail/phone) incur higher fees unless strong authentication is used."
+}
 
-    # === GLOBAL JSON — feature only
+    # === GLOBAL JSON — feature only (template match)
     shap_feature_df = (
         shap_impact_df
         .groupby("feature", as_index=False)
@@ -177,37 +177,42 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
     )
     shap_feature_df["shap_pct"] = (100 * shap_feature_df["shap_abs"] / shap_feature_df["shap_abs"].sum()).round(2)
 
-    overall_features = []
+
+    # Normalize overall feature importances to sum to exactly 1.0 (float, 2 decimals)
+    total_overall = shap_feature_df["shap_abs"].sum()
+    norm_vals = []
     for _, row in shap_feature_df.iterrows():
+        norm = row["shap_abs"] / total_overall if total_overall else 0.0
+        norm_vals.append(norm)
+    # Round and adjust last value
+    rounded = [round(v, 2) for v in norm_vals]
+    diff = round(1.0 - sum(rounded), 2)
+    if rounded:
+        rounded[-1] += diff
+    overall_features = []
+    for i, (_, row) in enumerate(shap_feature_df.iterrows()):
         feature = row['feature']
-        pct = row['shap_pct']
         reason = feature_only_reasons.get(feature, "")
         overall_features.append({
             "feature_name": feature,
             "feature_reason": reason,
-            "importance_normalized": str(pct)
+            "importance_normalized": float(rounded[i])
         })
+    # Sort overall_features by importance_normalized descending
+    overall_features.sort(key=lambda x: x["importance_normalized"], reverse=True)
 
-    global_json = {
-        "overall": {
-            "features": overall_features
-        },
-        "per_transaction": []
-    }
-
-    with open("shap_global_feature_impact.json", "w") as f:
-        json.dump(global_json, f, indent=2)
-
-    # === PER TRANSACTION JSON
+    # === PER TRANSACTION JSON (template match)
     shap_lookup_pct = {
         f"{row['feature']}_{row['value']}": row["shap_pct"]
         for _, row in shap_impact_df.iterrows()
     }
 
     per_transaction_json = []
+
     for idx in range(min(len(df_txn), len(shap_df))):
         row = df_txn.iloc[idx]
         txn_features = []
+        txn_importances = []
 
         for feat in FEATURES:
             if feat not in row:
@@ -218,46 +223,52 @@ def generate_shap_explanations(model_path, x_test_path, full_txn_path):
 
             if feat in categorical_features:
                 lookup_key = f"{feat}_{val_str}"
-                col_name = lookup_key
                 key = f"cat__{feat}_{val_str}"
                 reason = feature_reasons.get(key, {}).get("1.0", "")
             else:
                 lookup_key = f"{feat}_ALL"
-                col_name = feat
                 key = f"num__{feat}"
                 reason = feature_reasons.get(key, {}).get(str(val)) or feature_reasons.get(key, {}).get("other", "")
 
-            shap_val = shap_lookup_pct.get(lookup_key, 0.0)
-
+            shap_val = float(shap_lookup_pct.get(lookup_key, 0.0))
+            txn_importances.append(abs(shap_val))
             txn_features.append({
-                "feature_value_name": col_name,
+                "feature_name": feat,
+                "feature_value": val_str,
                 "feature_reason": reason,
-                "importance_normalized": round(float(shap_val), 2)
+                "importance_normalized": shap_val  # will normalize below
             })
 
-        currency = row.get("mc_settlement_currency_code", "N/A")
+        # Normalize transaction feature importances to sum to exactly 1.0 (float, 2 decimals)
+        total_txn = sum(txn_importances)
+        norm_vals = [v / total_txn if total_txn else 0.0 for v in txn_importances]
+        rounded = [round(v, 2) for v in norm_vals]
+        diff = round(1.0 - sum(rounded), 2)
+        if rounded:
+            rounded[-1] += diff
+        for i, f in enumerate(txn_features):
+            f["importance_normalized"] = float(rounded[i])
+        # Sort txn_features by importance_normalized descending
+        txn_features.sort(key=lambda x: x["importance_normalized"], reverse=True)
+
+        predicted_fee = float(y_pred[idx])
+        actual_fee = float(row.get("actual_fee", predicted_fee))  # fallback if not present
+        downgrade = bool(row.get("downgrade", False))
 
         per_transaction_json.append({
             "transaction_index": int(idx),
-            "currency": currency,
-            "rate_pct": row.get("rate_pct", "N/A"),
-            "predicted_fee": float(y_pred[idx]),
+            "predicted_fee": str(round(predicted_fee, 2)),
+            "actual_fee": str(round(actual_fee, 2)),
+            "downgrade": downgrade,
             "transaction_features": txn_features
         })
 
-    per_txn_json = {
+    # Final output matches template
+    output_json = {
+        "overall": {
+            "features": overall_features
+        },
         "per_transaction": per_transaction_json
     }
 
-    merged_json = {
-        "overall": global_json.get("overall", {}),
-        "per_transaction": per_txn_json.get("per_transaction", [])
-
-    }
-
-    with open("shap_all_with_transactions.json", "w") as f:
-        json.dump(merged_json, f, indent=2)
-
-    print("✅ Exported:")
-    print("   → shap_global_feature_impact.json")
-    print("   → shap_per_transaction_only.json")
+    return output_json
