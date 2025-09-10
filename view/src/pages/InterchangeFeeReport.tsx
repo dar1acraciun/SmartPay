@@ -66,6 +66,7 @@ const InterchangeFeeReport: React.FC = () => {
         if (!res.ok) throw new Error(`Request failed (${res.status})`);
         const json: ReportData = await res.json();
         setData(json);
+        console.log(data.overall.features[0].feature_name)
       } catch (e: any) {
         if (e.name !== "AbortError") setError(e.message || "Eroare la încărcare.");
       } finally {

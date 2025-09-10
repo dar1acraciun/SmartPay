@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Brain, Shield, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const FeaturesSection = () => {
   return (
@@ -34,13 +35,16 @@ const FeaturesSection = () => {
                 </p>
               </div>
               <div className="flex justify-center lg:justify-start">
-                <Button 
-                  variant="outline" 
+                <Button
+                  asChild
+                  variant="outline"
                   size="lg"
                   className="border-brand-teal text-brand-teal hover:bg-brand-teal hover:text-white transition-colors group"
                 >
-                  Unlock Savings
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <Link to="/interq-advisor">
+                    Unlock Savings
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -81,13 +85,16 @@ const FeaturesSection = () => {
                 </p>
               </div>
               <div className="flex justify-center lg:justify-start">
-                <Button 
-                  variant="outline" 
+                <Button
+                  asChild
+                  variant="outline"
                   size="lg"
                   className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white transition-colors group"
                 >
-                  Check Compliance
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <Link to="/compliance-checker">
+                    Check Compliance
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </Button>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -21,18 +22,14 @@ const HeroSection = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button
+                asChild
                 size="lg"
                 className="bg-brand-orange hover:bg-brand-orange-hover text-white font-semibold px-8 py-4 rounded-lg transition-colors"
               >
-                Start Saving Now
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-brand-blue text-brand-blue hover:bg-brand-light font-semibold px-8 py-4 rounded-lg transition-colors"
-              >
-                See How It Works
+                <Link to="/interq-advisor">
+                  Start Saving Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
             </div>
           </div>
