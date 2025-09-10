@@ -21,7 +21,7 @@ from src.compliance.mapper_visa import map_visa   # <-- NOU
 
 router = APIRouter(prefix="/api/compliance", tags=["compliance"])
 
-CONFIG_DIR = os.path.join(BASE_DIR, "compliance_service", "config")
+CONFIG_DIR = os.path.join(os.path.dirname(__file__), "config")
 REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
@@ -88,7 +88,7 @@ async def check_csv(
     return_csv: bool = Form(False),
 ):
     # 1) citește fișierul din /files
-    files_dir = os.path.join(BASE_DIR, "files")
+    files_dir = "/app/files"
     file_path = os.path.join(files_dir, f"{file_id}.csv")
     if not os.path.exists(file_path):
         raise HTTPException(404, f"Fișierul cu id '{file_id}' nu există în /files.")
