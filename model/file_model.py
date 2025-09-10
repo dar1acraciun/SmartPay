@@ -22,16 +22,17 @@ class File(Base):
         self.brand = brand
         session.commit()
         return self
-       
-    def update_transaction(self, session, json):
-        def count_downgrade_from_json(json_data):
-            return sum(1 for tx in json_data.get("per_transaction", []) if tx.get("downgrade") is True)
-        count = self.count_downgrade_from_json(json)
+
+    def update_transaction(self, session, json_data):
+        # Count how many transactions have downgrade == True or False
+        count = sum(1 for tx in json_data.get("per_transaction", []) if tx.get("downgrade") is True)
         self.downgraded_transaction = count
-        self.status = "processed"
         session.commit()
-        return self
-    
+        session.refresh(self)
+        #save in  a file the json data as string and the count
+        with open(f"123333_transactions.json", "w") as f:
+            json.dump(json_data, f)
+            f.write(f"\nCount of downgraded transactions: {count}\n")
 
 
     @staticmethod

@@ -1,7 +1,8 @@
 import os
 import json
 from fastapi import HTTPException
-from hackathon_mastercard_regressor.evaluate_model import generate_shap_explanations
+from hackathon_mastercard_regressor.evaluate_model import generate_shap_explanations as generate_shap_explanations_mc
+from hackathon_visa_regressor.evaluate_model import generate_shap_explanations as generate_shap_explanations_visa
 from model.report_model import Report
 from model.file_model import File
 import datetime, uuid
@@ -78,7 +79,7 @@ async def generate_report_controller(source_id: str) -> str:
     if file.brand.lower() == "mastercard":
         file_only_features = file_source[FEATURES_MASTERCARD]
         base_path = os.path.join(os.path.dirname(__file__), '..', 'hackathon_mastercard_regressor')
-        report_json = generate_shap_explanations(
+        report_json = generate_shap_explanations_mc(
             model_path=os.path.join(base_path, "xgb_model_interchange_fee_rate.pkl"),
             file_only_features=file_only_features,
             file_source=file_source
@@ -86,10 +87,10 @@ async def generate_report_controller(source_id: str) -> str:
     elif file.brand.lower() == "visa":
         file_only_features = file_source[FEATURES_VISA]
         base_path = os.path.join(os.path.dirname(__file__), '..', 'hackathon_visa_regressor')
-        report_json = generate_shap_explanations(
+        report_json = generate_shap_explanations_visa(
             model_path=os.path.join(base_path, "xgb_model_interchange_fee_rate.pkl"),
-            file_only_features=file_only_features,
-            file_source=file_source
+            x_file=file_only_features,
+            full_file=file_source
         )
     
     with SessionLocal() as session:
@@ -101,6 +102,10 @@ async def generate_report_controller(source_id: str) -> str:
         report.insert_report(session, file.brand)
         report.path = f"/reports/{report.id}.json"
         session.commit()
+        file_db = File.get_file(session, source_id)
+        if file_db:
+            file_db.update_transaction(session, report_json)
+            session.commit()
         save_report_json(report_json, report.id)
         return {"message": "Report JSON saved.", "report_id": report.id, "path": report.path}
     
@@ -115,7 +120,7 @@ async def get_all_reports_controller():
         result = [
             {
                 "id": r.id,
-                "source_file_id": getattr(r, "source_file_id", None),
+                "source_file": getattr(r, "source_file", None),
                 "path": getattr(r, "path", None),
                 "brand": getattr(r, "brand", None),
                 "timestamp": str(getattr(r, "timestamp", ""))

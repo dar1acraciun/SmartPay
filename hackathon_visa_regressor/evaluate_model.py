@@ -9,12 +9,17 @@ from sklearn.inspection import permutation_importance
 def generate_shap_explanations(model_path, x_file, full_file):
     # === Load model and data ===
     model = joblib.load(model_path)
+    if model is None:
+        return False
     X_test = x_file
     df_txn = full_file
 
-    print(x_file.head())
-
-    y_pred = model.predict(X_test)
+    #save to file x_file and full file
+    #save x_file in file
+    try:
+        y_pred = model.predict(X_test)
+    except Exception as e:
+        return False
 
     # === Features used in the model ===
     FEATURES = [
@@ -29,56 +34,69 @@ def generate_shap_explanations(model_path, x_file, full_file):
     ]
 
     # === SHAP Analysis ===
-    booster = model.named_steps["xgb"]
-    preprocessor = model.named_steps["preprocessor"]
-    X_transformed = preprocessor.transform(X_test)
-    feature_names = preprocessor.get_feature_names_out()
-    explainer = shap.Explainer(booster)
-    shap_values = explainer(X_transformed)
-    shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
+    try: 
+        booster = model.named_steps["xgb"]
+        preprocessor = model.named_steps["preprocessor"]
+        X_transformed = preprocessor.transform(X_test)
+        feature_names = preprocessor.get_feature_names_out()
+        explainer = shap.Explainer(booster)
+        shap_values = explainer(X_transformed)
+        shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
+    except Exception as e:
+        return False
+
 
     # === Detect categorical vs numeric
-    categorical_features = preprocessor.transformers_[0][2]
-    numeric_features = preprocessor.transformers_[1][2]
+    try: 
+        categorical_features = preprocessor.transformers_[0][2]
+        numeric_features = preprocessor.transformers_[1][2]
+    except Exception as e:
+        return False
 
     # === Compute global SHAP impact per feature value
-    shap_impact_list = []
-    for feat in FEATURES:
-        if feat not in X_test.columns:
-            continue
+    try:
+        shap_impact_list = []
+        for feat in FEATURES:
+            if feat not in X_test.columns:
+                continue
 
-        if feat in categorical_features:
-            for val in X_test[feat].dropna().unique():
-                mask = X_test[feat] == val
-                val_str = str(val).strip()
-                col_matches = [c for c in feature_names if f"{feat}_{val_str}" in c]
+            if feat in categorical_features:
+                for val in X_test[feat].dropna().unique():
+                    mask = X_test[feat] == val
+                    val_str = str(val).strip()
+                    col_matches = [c for c in feature_names if f"{feat}_{val_str}" in c]
+                    if not col_matches:
+                        continue
+                    impact = shap_df[col_matches].loc[mask].sum().sum()
+                    shap_impact_list.append({
+                        "feature": feat,
+                        "value": val_str,
+                        "shap_total": impact
+                    })
+            else:
+                col_matches = [c for c in feature_names if c.endswith(feat)]
                 if not col_matches:
                     continue
-                impact = shap_df[col_matches].loc[mask].sum().sum()
+                impact = shap_df[col_matches].sum().sum()
                 shap_impact_list.append({
                     "feature": feat,
-                    "value": val_str,
+                    "value": "ALL",
                     "shap_total": impact
                 })
-        else:
-            col_matches = [c for c in feature_names if c.endswith(feat)]
-            if not col_matches:
-                continue
-            impact = shap_df[col_matches].sum().sum()
-            shap_impact_list.append({
-                "feature": feat,
-                "value": "ALL",
-                "shap_total": impact
-            })
-
-    print(shap_impact_list)
+    except Exception as e:
+        return False
+    
+    try:
 
     # === Normalize SHAP values
-    shap_impact_df = pd.DataFrame(shap_impact_list)
-    shap_impact_df["shap_abs"] = shap_impact_df["shap_total"].abs()
-    total_abs = shap_impact_df["shap_abs"].sum()
-    shap_impact_df["shap_pct"] = (100 * shap_impact_df["shap_abs"] / total_abs).round(2)
-    shap_impact_df.sort_values("shap_pct", ascending=False, inplace=True)
+        shap_impact_df = pd.DataFrame(shap_impact_list)
+        print(shap_impact_df["shap_total"])
+        shap_impact_df["shap_abs"] = shap_impact_df["shap_total"].abs()
+        total_abs = shap_impact_df["shap_abs"].sum()
+        shap_impact_df["shap_pct"] = (100 * shap_impact_df["shap_abs"] / total_abs).round(2)
+        shap_impact_df.sort_values("shap_pct", ascending=False, inplace=True)
+    except Exception as e:
+        return False
 
     # === Feature value reasons
     feature_reasons = {
@@ -102,7 +120,6 @@ def generate_shap_explanations(model_path, x_file, full_file):
         "cat__visa_cross_border_indicator_N": { "1.0": "Transaction is  not cross-border: lower cost & risk."},
         "num__visa_merchant_category_code": {"other": "Defines type of merchant (e.g., grocery, travel, gambling)."},
     }
-
     # === Feature-level reasons (for global overview)
     feature_only_reasons = {
         "visa_cross_border_indicator": "Whether the transaction was international (higher risk and fees).",
@@ -115,28 +132,28 @@ def generate_shap_explanations(model_path, x_file, full_file):
         "visa_merchant_category_code": "Merchant category code (defines merchant business type).",
     }
 
-    # === GLOBAL JSON — feature only (normalized, sorted)
-    shap_feature_df = (
-        shap_impact_df
-        .groupby("feature", as_index=False)
-        .agg({"shap_total": lambda x: np.sum(np.abs(x))})
-        .rename(columns={"shap_total": "shap_abs"})
-    )
-    total_overall = shap_feature_df["shap_abs"].sum()
-    norm_vals = [row["shap_abs"] / total_overall if total_overall else 0.0 for _, row in shap_feature_df.iterrows()]
-    rounded = [round(v, 2) for v in norm_vals]
-    diff = round(1.0 - sum(rounded), 2)
-    if rounded:
-        rounded[-1] += diff
+    # === GLOBAL JSON — feature only
+    try:
+        shap_feature_df = (
+            shap_impact_df
+            .groupby("feature", as_index=False)
+            .agg({"shap_total": lambda x: np.sum(np.abs(x))})
+            .rename(columns={"shap_total": "shap_abs"})
+        )
+        shap_feature_df["shap_pct"] = (100 * shap_feature_df["shap_abs"] / shap_feature_df["shap_abs"].sum()).round(2)
+    except Exception as e:
+        return False
     overall_features = []
-    for i, (_, row) in enumerate(shap_feature_df.iterrows()):
+    for _, row in shap_feature_df.iterrows():
         feature = row['feature']
+        pct = row['shap_pct']
         reason = feature_only_reasons.get(feature, "")
         overall_features.append({
             "feature_name": feature,
             "feature_reason": reason,
-            "importance_normalized": float(rounded[i])
+            "importance_normalized": round(float(pct) / 100.0, 4)
         })
+    # Sort features by descending importance_normalized
     overall_features.sort(key=lambda x: x["importance_normalized"], reverse=True)
 
     global_json = {
@@ -153,12 +170,10 @@ def generate_shap_explanations(model_path, x_file, full_file):
         for _, row in shap_impact_df.iterrows()
     }
 
-
     per_transaction_json = []
     for idx in range(min(len(df_txn), len(shap_df))):
         row = df_txn.iloc[idx]
         txn_features = []
-        txn_importances = []
 
         for feat in FEATURES:
             if feat not in row:
@@ -169,46 +184,44 @@ def generate_shap_explanations(model_path, x_file, full_file):
 
             if feat in categorical_features:
                 lookup_key = f"{feat}_{val_str}"
+                col_name = lookup_key
                 key = f"cat__{feat}_{val_str}"
                 reason = feature_reasons.get(key, {}).get("1.0", "")
             else:
                 lookup_key = f"{feat}_ALL"
+                col_name = feat
                 key = f"num__{feat}"
                 reason = feature_reasons.get(key, {}).get(str(val)) or feature_reasons.get(key, {}).get("other", "")
 
-            shap_val = float(shap_lookup_pct.get(lookup_key, 0.0))
-            txn_importances.append(abs(shap_val))
+            shap_val = shap_lookup_pct.get(lookup_key, 0.0)
+
             txn_features.append({
                 "feature_name": feat,
                 "feature_value": val_str,
                 "feature_reason": reason,
-                "importance_normalized": shap_val  # will normalize below
+                "importance_normalized": round(float(shap_val) / 100.0, 4)
             })
 
-        # Normalize transaction feature importances to sum to exactly 1.0 (float, 2 decimals)
-        total_txn = sum(txn_importances)
-        norm_vals = [v / total_txn if total_txn else 0.0 for v in txn_importances]
-        rounded_txn = [round(v, 2) for v in norm_vals]
-        diff_txn = round(1.0 - sum(rounded_txn), 2)
-        if rounded_txn:
-            rounded_txn[-1] += diff_txn
-        for i, f in enumerate(txn_features):
-            f["importance_normalized"] = float(rounded_txn[i])
-        txn_features.sort(key=lambda x: x["importance_normalized"], reverse=True)
+        # Use actual_fee from the correct column (try 'actual_fee', fallback to 'fee_rate', fallback to predicted_fee)
+        actual_fee = row.get("fee_rate")
+        if actual_fee is None:
+            actual_fee = row.get("fee_rate")
+        if actual_fee is None:
+            actual_fee = row.get("visa_interchange_fee")
+        if actual_fee is None:
+            actual_fee = float(y_pred[idx])
 
-        # Calculate downgrade (same logic as Mastercard: bool(row.get("downgrade", False)))
-        downgrade = bool(row.get("downgrade", False))
+        predicted = float(y_pred[idx])
+        downgraded = bool(predicted > actual_fee)
 
         currency = row.get("currency", "N/A")
-        actual_fee = row.get("fee_rate", "N/A")
-        predicted_fee = float(y_pred[idx])
 
         per_transaction_json.append({
             "transaction_index": int(idx),
             "currency": currency,
             "actual_fee": actual_fee,
-            "predicted_fee": predicted_fee,
-            "downgrade": downgrade,
+            "downgrade": downgraded,
+            "predicted_fee": float(y_pred[idx]),
             "transaction_features": txn_features
         })
 
@@ -224,6 +237,5 @@ def generate_shap_explanations(model_path, x_file, full_file):
 
     with open("shap_all_with_transactions.json", "w") as f:
         json.dump(merged_json, f, indent=2)
-
+    
     return merged_json
-

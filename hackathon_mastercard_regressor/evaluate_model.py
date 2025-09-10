@@ -266,7 +266,7 @@ def generate_shap_explanations(model_path, file_only_features, file_source):
 
         predicted_fee = float(y_pred[idx])
         actual_fee = float(row.get("interchange_fee", predicted_fee)) # fallback if not present
-        downgrade = bool(row.get("downgrade", False))
+        downgrade = bool(predicted_fee > actual_fee)
 
         per_transaction_json.append({
             "transaction_index": int(idx),
