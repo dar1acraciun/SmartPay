@@ -1,0 +1,1008 @@
+{
+  "overall": {
+    "features": [
+      {
+        "feature_name": "visa_avs_result_code",
+        "feature_reason": "Result of address verification system (AVS) used during checkout.",
+        "importance_normalized": "8.140000343322754"
+      },
+      {
+        "feature_name": "visa_channel_type",
+        "feature_reason": "Transaction channel type (e.g., ecommerce or card-present).",
+        "importance_normalized": "17.399999618530273"
+      },
+      {
+        "feature_name": "visa_cross_border_indicator",
+        "feature_reason": "Whether the transaction was international (higher risk and fees).",
+        "importance_normalized": "20.790000915527344"
+      },
+      {
+        "feature_name": "visa_cvv2_result_code",
+        "feature_reason": "Outcome of CVV2 security check (match, no match, unavailable).",
+        "importance_normalized": "15.579999923706055"
+      },
+      {
+        "feature_name": "visa_eci_indicator",
+        "feature_reason": "Electronic Commerce Indicator (ECI) reflects transaction security.",
+        "importance_normalized": "6.019999980926514"
+      },
+      {
+        "feature_name": "visa_merchant_category_code",
+        "feature_reason": "Merchant category code (defines merchant business type).",
+        "importance_normalized": "5.300000190734863"
+      },
+      {
+        "feature_name": "visa_pos_entry_mode",
+        "feature_reason": "Method of card entry (manual, chip, swipe, contactless).",
+        "importance_normalized": "8.300000190734863"
+      },
+      {
+        "feature_name": "visa_terminal_capability_code",
+        "feature_reason": "Security features supported by the terminal (e.g., EMV, NFC).",
+        "importance_normalized": "18.469999313354492"
+      }
+    ]
+  },
+  "per_transaction": [
+    {
+      "transaction_index": 0,
+      "currency": "JPY",
+      "actual_fee": 2.5,
+      "predicted_fee": 3.5539605617523193,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y): Billing address verified.",
+          "importance_normalized": 7.21
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 1,
+      "currency": "USD",
+      "actual_fee": 2.25,
+      "predicted_fee": 3.426422119140625,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_N",
+          "feature_reason": "AVS no match (N): Address verification failed.",
+          "importance_normalized": 0.19
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 2,
+      "currency": "CAD",
+      "actual_fee": 2.0,
+      "predicted_fee": 1.7835863828659058,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_A",
+          "feature_reason": "AVS partial match (A): Address number matched, ZIP failed.",
+          "importance_normalized": 0.02
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 3,
+      "currency": "CAD",
+      "actual_fee": 3.5,
+      "predicted_fee": 1.7526887655258179,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_N",
+          "feature_reason": "CVV2 did not match (N): Indicates potential fraud.",
+          "importance_normalized": 0.11
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_N",
+          "feature_reason": "AVS no match (N): Address verification failed.",
+          "importance_normalized": 0.19
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 4,
+      "currency": "GBP",
+      "actual_fee": 1.25,
+      "predicted_fee": 1.3068454265594482,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_N",
+          "feature_reason": "CVV2 did not match (N): Indicates potential fraud.",
+          "importance_normalized": 0.11
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_N",
+          "feature_reason": "AVS no match (N): Address verification failed.",
+          "importance_normalized": 0.19
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 5,
+      "currency": "EUR",
+      "actual_fee": 2.75,
+      "predicted_fee": 2.5141685009002686,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y): Billing address verified.",
+          "importance_normalized": 7.21
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 6,
+      "currency": "EUR",
+      "actual_fee": 2.0,
+      "predicted_fee": 3.6471564769744873,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Z",
+          "feature_reason": "AVS ZIP-only match (Z): ZIP matched, address did not.",
+          "importance_normalized": 0.34
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 7,
+      "currency": "EUR",
+      "actual_fee": 2.5,
+      "predicted_fee": 2.769010066986084,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Z",
+          "feature_reason": "AVS ZIP-only match (Z): ZIP matched, address did not.",
+          "importance_normalized": 0.34
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 8,
+      "currency": "USD",
+      "actual_fee": 2.75,
+      "predicted_fee": 1.61922287940979,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y): Billing address verified.",
+          "importance_normalized": 7.21
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 9,
+      "currency": "EUR",
+      "actual_fee": 2.5,
+      "predicted_fee": 3.746128797531128,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_N",
+          "feature_reason": "AVS no match (N): Address verification failed.",
+          "importance_normalized": 0.19
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 10,
+      "currency": "EUR",
+      "actual_fee": 1.5,
+      "predicted_fee": 3.4655890464782715,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y): Billing address verified.",
+          "importance_normalized": 7.21
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 11,
+      "currency": "GBP",
+      "actual_fee": 3.5,
+      "predicted_fee": 1.3905692100524902,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_N",
+          "feature_reason": "AVS no match (N): Address verification failed.",
+          "importance_normalized": 0.19
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 12,
+      "currency": "AUD",
+      "actual_fee": 1.25,
+      "predicted_fee": 2.5212531089782715,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_U",
+          "feature_reason": "AVS unavailable (U): Address verification was not performed.",
+          "importance_normalized": 0.38
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 13,
+      "currency": "GBP",
+      "actual_fee": 3.0,
+      "predicted_fee": 3.28075909614563,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Z",
+          "feature_reason": "AVS ZIP-only match (Z): ZIP matched, address did not.",
+          "importance_normalized": 0.34
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 14,
+      "currency": "JPY",
+      "actual_fee": 1.5,
+      "predicted_fee": 2.8268661499023438,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_A",
+          "feature_reason": "AVS partial match (A): Address number matched, ZIP failed.",
+          "importance_normalized": 0.02
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 15,
+      "currency": "JPY",
+      "actual_fee": 3.5,
+      "predicted_fee": 2.7462191581726074,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_N",
+          "feature_reason": "AVS no match (N): Address verification failed.",
+          "importance_normalized": 0.19
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 16,
+      "currency": "JPY",
+      "actual_fee": 3.5,
+      "predicted_fee": 1.9895291328430176,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_N",
+          "feature_reason": "CVV2 did not match (N): Indicates potential fraud.",
+          "importance_normalized": 0.11
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Z",
+          "feature_reason": "AVS ZIP-only match (Z): ZIP matched, address did not.",
+          "importance_normalized": 0.34
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 17,
+      "currency": "USD",
+      "actual_fee": 2.25,
+      "predicted_fee": 1.7697399854660034,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_Y",
+          "feature_reason": "",
+          "importance_normalized": 5.26
+        },
+        {
+          "feature_value_name": "visa_channel_type_ecommerce",
+          "feature_reason": "E-commerce (card-not-present): Higher fraud risk.",
+          "importance_normalized": 3.89
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_M",
+          "feature_reason": "CVV2 matched (M): Cardholder authentication successful.",
+          "importance_normalized": 15.25
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Z",
+          "feature_reason": "AVS ZIP-only match (Z): ZIP matched, address did not.",
+          "importance_normalized": 0.34
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 18,
+      "currency": "JPY",
+      "actual_fee": 1.25,
+      "predicted_fee": 2.642784595489502,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_U",
+          "feature_reason": "CVV2 unavailable (U): May increase risk score.",
+          "importance_normalized": 0.22
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_Y",
+          "feature_reason": "AVS full match (Y): Billing address verified.",
+          "importance_normalized": 7.21
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    },
+    {
+      "transaction_index": 19,
+      "currency": "EUR",
+      "actual_fee": 2.5,
+      "predicted_fee": 2.9705276489257812,
+      "transaction_features": [
+        {
+          "feature_value_name": "visa_cross_border_indicator_N",
+          "feature_reason": "",
+          "importance_normalized": 15.53
+        },
+        {
+          "feature_value_name": "visa_channel_type_card_present",
+          "feature_reason": "Transaction was card-present (e.g., in-store).",
+          "importance_normalized": 13.51
+        },
+        {
+          "feature_value_name": "visa_eci_indicator",
+          "feature_reason": "ECI indicates e-commerce security (lower = riskier).",
+          "importance_normalized": 6.02
+        },
+        {
+          "feature_value_name": "visa_cvv2_result_code_N",
+          "feature_reason": "CVV2 did not match (N): Indicates potential fraud.",
+          "importance_normalized": 0.11
+        },
+        {
+          "feature_value_name": "visa_avs_result_code_U",
+          "feature_reason": "AVS unavailable (U): Address verification was not performed.",
+          "importance_normalized": 0.38
+        },
+        {
+          "feature_value_name": "visa_pos_entry_mode",
+          "feature_reason": "How the card was entered (manual, chip, contactless).",
+          "importance_normalized": 8.3
+        },
+        {
+          "feature_value_name": "visa_terminal_capability_code",
+          "feature_reason": "Device capability for fraud prevention (higher = better).",
+          "importance_normalized": 18.47
+        },
+        {
+          "feature_value_name": "visa_merchant_category_code",
+          "feature_reason": "Defines type of merchant (e.g., grocery, travel, gambling).",
+          "importance_normalized": 5.3
+        }
+      ]
+    }
+  ]
+}
