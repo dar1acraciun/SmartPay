@@ -1,0 +1,8 @@
+rules:
+  - id: MC1_ECOM_ECI_MAPPING
+    title: "Mastercard e-commerce – weak ECI mapping"
+    when: "brand == 'Mastercard' and is_ecom and eci_strength == 'NONE'"
+    severity: MEDIUM
+    message: "ECI does not indicate authenticated/attempted 3DS, increasing downgrade risk."
+    remediation: "Correct ECI mapping (2 = authenticated, 1 = attempted) and ensure 3DS evidence is submitted."
+    impact_hint_bps: 10

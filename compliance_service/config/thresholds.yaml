@@ -1,0 +1,8 @@
+defaults:
+  pos_clearing_hours: 24
+  cnp_clearing_hours: 72
+  low_value_threshold: 30
+  high_amount_threshold: 250
+regions:
+  EU_UK:
+    sca_required_ecom: true
