@@ -33,3 +33,7 @@ db_data/
 
 # Ignore local config
 *.local
+
+#Ignore /reports and /files 
+reports/
+files/

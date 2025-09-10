@@ -12,7 +12,20 @@ def generate_shap_explanations(model_path, file_only_features, file_source):
     X_test = file_only_features
     df_txn = file_source
 
-    y_pred = model.predict(X_test)
+    #save in csv file only features
+    df_txn.to_csv("file_only_features_123.csv", index=False)
+
+    # Ensure model is a pipeline and has a preprocessor step
+    if not hasattr(model, 'named_steps') or 'preprocessor' not in model.named_steps:
+        raise ValueError("Loaded model is not a pipeline with a 'preprocessor' step. Please check your model export.")
+
+    # Pass raw features to pipeline for prediction
+    try:
+        y_pred = model.predict(X_test)
+        #save y_pred to file
+        np.savetxt("y_pred.csv", y_pred, delimiter=",")
+    except ValueError as e:
+        raise ValueError(f"Error during prediction. Ensure X_test contains raw, unencoded features matching the pipeline's expected columns. Details: {e}")
 
     # === Features used in the model ===
     FEATURES = [
@@ -252,7 +265,7 @@ def generate_shap_explanations(model_path, file_only_features, file_source):
         txn_features.sort(key=lambda x: x["importance_normalized"], reverse=True)
 
         predicted_fee = float(y_pred[idx])
-        actual_fee = float(row.get("actual_fee", predicted_fee))  # fallback if not present
+        actual_fee = float(row.get("interchange_fee", predicted_fee)) # fallback if not present
         downgrade = bool(row.get("downgrade", False))
 
         per_transaction_json.append({
@@ -270,5 +283,9 @@ def generate_shap_explanations(model_path, file_only_features, file_source):
         },
         "per_transaction": per_transaction_json
     }
+
+    #save to file for inspection
+    with open("shap_explanations.json", "w") as f:
+        json.dump(output_json, f, indent=4)
 
     return output_json

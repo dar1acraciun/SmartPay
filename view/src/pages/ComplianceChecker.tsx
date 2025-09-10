@@ -1,80 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ComplianceTable, { ComplianceFile } from "@/components/Compliance Checker/ComplianceTable";
 import ComplianceModal from "@/components/Compliance Checker/ComplianceModal";
 
-// Mock data for demonstration
-const mockFiles: ComplianceFile[] = [
-  {
-    id: "1",
-    fileName: "file_name.csv",
-    date: "2024-01-15",
-    transactions: [
-      {
-        id: "transaction_id_1",
-        riskLevel: "High",
-        findings: ["finding text 1", "finding text 2"]
-      },
-      {
-        id: "transaction_id_2", 
-        riskLevel: "High",
-        findings: ["finding text 1", "finding text 2"]
-      }
-    ]
-  },
-  {
-    id: "2",
-    fileName: "transactions_q1_2024.csv",
-    date: "2024-02-20",
-    transactions: [
-      {
-        id: "transaction_id_3",
-        riskLevel: "Medium",
-        findings: ["Incomplete documentation", "Minor validation issues"]
-      }
-    ]
-  },
-  {
-    id: "3", 
-    fileName: "payments_data.csv",
-    date: "2024-03-10",
-    transactions: [
-      {
-        id: "transaction_id_4",
-        riskLevel: "Low",
-        findings: ["All checks passed", "No issues found"]
-      },
-      {
-        id: "transaction_id_5",
-        riskLevel: "Medium", 
-        findings: ["Minor formatting issues", "Timestamps need adjustment"]
-      }
-    ]
-  }
-];
+import axios from "axios";
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
 const ComplianceChecker = () => {
-  const [files] = useState<ComplianceFile[]>(mockFiles);
+  const [files, setFiles] = useState<ComplianceFile[]>([]);
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/files/all`);
+        // Map backend response to ComplianceFile[] structure
+        const raw = res?.data?.files ?? [];
+        const mapped: ComplianceFile[] = raw.map((f: any) => ({
+          id: String(f.id),
+          fileName: f.name ?? f.fileName ?? String(f.id),
+          date: f.timestamp ? new Date(f.timestamp).toISOString().slice(0, 10) : "",
+          transactions: [], // You can enrich this later with compliance results
+        }));
+        setFiles(mapped);
+      } catch (err) {
+        setFiles([]);
+      }
+    };
+    fetchFiles();
+  }, []);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFile, setSelectedFile] = useState<ComplianceFile | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [complianceData, setComplianceData] = useState<any>(null);
 
   const handleSortToggle = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  const handleCheckCompliance = (file: ComplianceFile) => {
+  const handleCheckCompliance = async (file: ComplianceFile) => {
     setSelectedFile(file);
     setIsModalOpen(true);
+    setComplianceData(null);
+        try {
+          // Prepare URL-encoded form data for POST request
+          const params = new URLSearchParams();
+          params.append("file_id", file.id);
+          params.append("min_fail_severity", "MEDIUM");
+          params.append("force_format", "auto");
+          params.append("return_csv", "false");
+          const res = await axios.post(
+            "http://localhost:8001/api/compliance/check",
+            params,
+            {
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "accept": "application/json",
+              },
+            }
+          );
+          setComplianceData(res.data);
+    } catch (err) {
+      setComplianceData({ error: "Failed to fetch compliance data" });
+    }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedFile(null);
+    setComplianceData(null);
   };
 
   return (
@@ -112,6 +108,7 @@ const ComplianceChecker = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         file={selectedFile}
+        complianceData={complianceData}
       />
     </div>
   );

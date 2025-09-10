@@ -30,6 +30,7 @@ const InterQAdvisor = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [generating, setGenerating] = useState(false);
   const [reportsLoading, setReportsLoading] = useState(false);
+  const [lastUploadedFileId, setLastUploadedFileId] = useState<string | null>(null);
 
   // ---------------------------
   // Helpers
@@ -133,6 +134,9 @@ const InterQAdvisor = () => {
 
       const data = res.data; // { message, file_id, path, brand, downgraded_transaction }
       setUploadedFile(file);
+      if (data?.file_id) {
+        setLastUploadedFileId(data.file_id);
+      }
 
       toast({
         title: "Upload successful",
@@ -165,28 +169,8 @@ const InterQAdvisor = () => {
     });
 
     try {
-      // TODO: replace with real generate route and payload
-      const formData = new FormData();
-      formData.append("file", uploadedFile);
-
-      // You may want to store file_id in state after upload, but for now, try to get it from backend
-      // If you have file_id, use it here:
-      // Example: POST /reports/generate/{file_id}
-      // Replace 'file_id' with the actual ID
-      // If you have file_id in upload response, store it in state and use it here
-      // For now, let's assume you have a way to get file_id
-
-      // TODO: Replace with actual file_id from upload response
-      // For demonstration, let's fetch the last uploaded file from backend
-      // You may want to improve this logic for production
-      let fileId = null;
-      try {
-        const filesRes = await axios.get(`${API_BASE}/files/all`);
-        const files = filesRes?.data?.files ?? [];
-        if (files.length > 0) {
-          fileId = files[files.length - 1].id;
-        }
-      } catch {}
+      // Use the most recent successfully uploaded file ID
+      const fileId = lastUploadedFileId;
 
       if (!fileId) {
         toast({
@@ -210,9 +194,28 @@ const InterQAdvisor = () => {
       });
       setUploadedFile(null);
       setCurrentPage(1);
+    } catch (err: any) {
+      if (err?.response?.status === 500) {
+        toast({
+          title: "Report generation failed",
+          description: "A server error occurred (500). The report could not be generated. Please check your file and try again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Report generation failed",
+          description: err?.response?.data?.detail || err?.message || "Unknown error.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setGenerating(false);
     }
+  // Ensure lastUploadedFileId always reflects the most recent successful upload
+  useEffect(() => {
+    // Optionally, you could fetch /files/all and set the last file ID here if needed
+    // But for now, we rely on upload response to set lastUploadedFileId
+  }, [uploadedFile]);
   };
 
   // ---------------------------

@@ -26,11 +26,11 @@ REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
 def _load_rules_thresholds():
-    with open(os.path.join(CONFIG_DIR, "thresholds.yaml")) as f:
+    with open(os.path.join(CONFIG_DIR, "thresholds.yaml"), encoding="utf-8") as f:
         thresholds = yaml.safe_load(f)
     rules: List[dict] = []
     for rel in ["rules_common.yaml", os.path.join("schemes", "visa.yaml"), os.path.join("schemes", "mastercard.yaml")]:
-        with open(os.path.join(CONFIG_DIR, rel)) as f:
+        with open(os.path.join(CONFIG_DIR, rel), encoding="utf-8") as f:
             rules += yaml.safe_load(f)["rules"]
     return thresholds, rules
 
@@ -73,6 +73,7 @@ class CheckSummary(BaseModel):
     total_estimated_impact: float
     rule_counts: Dict[str, int]
     download: Optional[str] = None
+    results: Optional[list] = None
 
 # -------- endpoints --------
 @router.get("/health")
@@ -92,7 +93,7 @@ async def check_csv(
     if not os.path.exists(file_path):
         raise HTTPException(404, f"Fișierul cu id '{file_id}' nu există în /files.")
     try:
-        df_raw = pd.read_csv(file_path)
+        df_raw = pd.read_csv(file_path, encoding="utf-8")
     except Exception as e:
         raise HTTPException(400, f"Eroare la citirea fișierului: {e}")
 
@@ -111,6 +112,38 @@ async def check_csv(
     counts.pop("", None) if "" in counts else None
     rule_counts = {k:int(v) for k,v in counts.items()}
 
+    # Build per-transaction results array: only transactions with findings (violated rules)
+    results = []
+    for idx, row in res.iterrows():
+        findings = row.get("compliance_findings", [])
+        # If findings is a string, try to parse as list (from eval or json)
+        if isinstance(findings, str):
+            import ast
+            try:
+                findings_list = ast.literal_eval(findings)
+                if isinstance(findings_list, list):
+                    findings = findings_list
+                else:
+                    findings = [findings] if findings else []
+            except Exception:
+                findings = [findings] if findings else []
+        # Only include transactions with non-empty findings list
+        if findings and isinstance(findings, list) and len(findings) > 0:
+            # Determine riskLevel as the highest severity in findings
+            severity_order = {"LOW": 1, "MEDIUM": 2, "HIGH": 3}
+            max_severity = "Unknown"
+            if all(isinstance(f, dict) for f in findings):
+                severities = [f.get("severity", "Unknown") for f in findings]
+                # Pick the highest severity
+                if severities:
+                    max_sev = max(severities, key=lambda s: severity_order.get(str(s).upper(), 0))
+                    max_severity = max_sev
+            results.append({
+                "id": str(row.get("transaction_id", idx)),
+                "riskLevel": max_severity,
+                "findings": findings
+            })
+
     download = None
     if return_csv:
         token = uuid.uuid4().hex[:8]
@@ -125,4 +158,5 @@ async def check_csv(
         total_estimated_impact=impact,
         rule_counts=rule_counts,
         download=download,
+        results=results,
     )
