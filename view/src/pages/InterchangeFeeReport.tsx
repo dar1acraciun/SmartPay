@@ -3,17 +3,25 @@ import { useParams, useSearchParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 
 /** ---- PALETA ---- */
 const PALETTE = {
-  ORANGE: "#D5520B",     // Syracuse Red Orange
-  TEAL: "#14B8A6",       // Keppel
-  CHARCOAL: "#374151",   // Charcoal
-  BLUE: "#1E3A8A",       // Marian Blue
-  WHITE: "#F3F4F6",      // Anti-flash white
+  ORANGE: "#D5520B", // Syracuse Red Orange
+  TEAL: "#14B8A6", // Keppel
+  CHARCOAL: "#374151", // Charcoal
+  BLUE: "#1E3A8A", // Marian Blue
+  WHITE: "#F3F4F6", // Anti-flash white
 };
 const BORDER_RGBA = "rgba(55, 65, 81, 0.18)"; // CHARCOAL @ ~18%
 
@@ -66,9 +74,10 @@ const InterchangeFeeReport: React.FC = () => {
         if (!res.ok) throw new Error(`Request failed (${res.status})`);
         const json: ReportData = await res.json();
         setData(json);
-        console.log(data.overall.features[0].feature_name)
+        console.log(data.overall.features[0].feature_name);
       } catch (e: any) {
-        if (e.name !== "AbortError") setError(e.message || "Eroare la încărcare.");
+        if (e.name !== "AbortError")
+          setError(e.message || "Eroare la încărcare.");
       } finally {
         setLoading(false);
       }
@@ -77,25 +86,28 @@ const InterchangeFeeReport: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-  if (!autoDownload) return;
-  if (!data) return;                  // wait for API
-  if (!reportRef.current) return;     // wait for DOM
+    if (!autoDownload) return;
+    if (!data) return; // wait for API
+    if (!reportRef.current) return; // wait for DOM
 
-  // Give the charts a beat to paint before snapshotting
-  const t = setTimeout(() => {
-    handleDownloadPDF();
-  }, 350);
+    // Give the charts a beat to paint before snapshotting
+    const t = setTimeout(() => {
+      handleDownloadPDF();
+    }, 350);
 
-  return () => clearTimeout(t);
-}, [autoDownload, data]);
-
+    return () => clearTimeout(t);
+  }, [autoDownload, data]);
 
   /** ---- EXPORT PDF ---- */
   const handleDownloadPDF = async () => {
     if (!reportRef.current) return;
     const canvas = await html2canvas(reportRef.current, { scale: 2 });
     const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "a4",
+    });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const imgWidth = pageWidth;
@@ -115,18 +127,24 @@ const InterchangeFeeReport: React.FC = () => {
   /** ---- UI: loading / error ---- */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center"
-           style={{ backgroundColor: PALETTE.WHITE, color: PALETTE.CHARCOAL }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: PALETTE.WHITE, color: PALETTE.CHARCOAL }}
+      >
         Generating report...
       </div>
     );
   }
   if (error || !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center"
-           style={{ backgroundColor: PALETTE.WHITE }}>
-        <div className="px-4 py-3 rounded-lg"
-             style={{ color: PALETTE.WHITE, backgroundColor: PALETTE.ORANGE }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: PALETTE.WHITE }}
+      >
+        <div
+          className="px-4 py-3 rounded-lg"
+          style={{ color: PALETTE.WHITE, backgroundColor: PALETTE.ORANGE }}
+        >
           {error ?? "Could not load report data."}
         </div>
       </div>
@@ -135,16 +153,32 @@ const InterchangeFeeReport: React.FC = () => {
 
   /** ---- PRELUCRARE DATE PENTRU CHARTS ---- */
   const overallFeatureData = data.overall.features.map((f) => ({
-    name: f.feature_name.replace(/mc_|_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+    name: f.feature_name
+      .replace(/mc_|_/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase()),
     importance: parseFloat(f.importance_normalized),
-    reason: f.feature_reason
+    reason: f.feature_reason,
   }));
 
-  const PIE_COLORS = [PALETTE.ORANGE, PALETTE.TEAL, PALETTE.BLUE, PALETTE.CHARCOAL];
+  const PIE_COLORS = [
+    PALETTE.ORANGE,
+    PALETTE.TEAL,
+    PALETTE.BLUE,
+    PALETTE.CHARCOAL,
+  ];
   const tickStyle = { fill: PALETTE.CHARCOAL };
 
   const formatFeatureName = (name: string) =>
     name.replace(/mc_|_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+
+  // Top feature for the "Primary Driver" tile
+  const topFeature = data.overall.features[0];
+  const topFeatureName = topFeature
+    ? formatFeatureName(topFeature.feature_name)
+    : "—";
+  const topFeaturePct = topFeature
+    ? (parseFloat(topFeature.importance_normalized) * 100).toFixed(1)
+    : "0.0";
 
   /** ---- RENDER ---- */
   return (
@@ -167,46 +201,97 @@ const InterchangeFeeReport: React.FC = () => {
       >
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">Interchange Fee Analysis Report</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            Interchange Fee Analysis Report
+          </h1>
           <p className="text-lg max-w-3xl mx-auto" style={{ opacity: 0.9 }}>
-            Comprehensive analysis of feature importance in interchange fee determination,
-            examining both overall patterns and individual transaction characteristics.
+            Comprehensive analysis of feature importance in interchange fee
+            determination, examining both overall patterns and individual
+            transaction characteristics.
           </p>
         </div>
 
         {/* Executive Summary */}
-        <div className="rounded-xl p-6 mb-8" style={{ border: `1px solid ${BORDER_RGBA}`, backgroundColor: PALETTE.WHITE }}>
+        <div
+          className="rounded-xl p-6 mb-8"
+          style={{
+            border: `1px solid ${BORDER_RGBA}`,
+            backgroundColor: PALETTE.WHITE,
+          }}
+        >
           <h2 className="text-2xl font-bold mb-4">Executive Summary</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-lg p-4" style={{ border: `1px solid ${BORDER_RGBA}` }}>
-              <h3 className="font-semibold" style={{ color: PALETTE.BLUE }}>Total Features Analyzed</h3>
-              <p className="text-3xl font-bold" style={{ color: PALETTE.BLUE }}>{data.overall.features.length}</p>
+            <div
+              className="rounded-lg p-4"
+              style={{ border: `1px solid ${BORDER_RGBA}` }}
+            >
+              <h3 className="font-semibold" style={{ color: PALETTE.BLUE }}>
+                Total Features Analyzed
+              </h3>
+              <p className="text-3xl font-bold" style={{ color: PALETTE.BLUE }}>
+                {data.overall.features.length}
+              </p>
             </div>
-            <div className="rounded-lg p-4" style={{ border: `1px solid ${BORDER_RGBA}` }}>
-              <h3 className="font-semibold" style={{ color: PALETTE.TEAL }}>Transactions Reviewed</h3>
-              <p className="text-3xl font-bold" style={{ color: PALETTE.TEAL }}>{data.per_transaction.length}</p>
+            <div
+              className="rounded-lg p-4"
+              style={{ border: `1px solid ${BORDER_RGBA}` }}
+            >
+              <h3 className="font-semibold" style={{ color: PALETTE.TEAL }}>
+                Transactions Reviewed
+              </h3>
+              <p className="text-3xl font-bold" style={{ color: PALETTE.TEAL }}>
+                {data.per_transaction.length}
+              </p>
             </div>
-            <div className="rounded-lg p-4" style={{ border: `1px solid ${BORDER_RGBA}` }}>
-              <h3 className="font-semibold" style={{ color: PALETTE.ORANGE }}>Primary Driver</h3>
-              <p className="text-lg font-bold" style={{ color: PALETTE.ORANGE }}>Channel Type (65%)</p>
+            <div
+              className="rounded-lg p-4"
+              style={{ border: `1px solid ${BORDER_RGBA}` }}
+            >
+              <h3 className="font-semibold" style={{ color: PALETTE.ORANGE }}>
+                Primary Feature
+              </h3>
+              <p
+                className="text-lg font-bold"
+                style={{ color: PALETTE.ORANGE }}
+              >
+                {topFeatureName} ({topFeaturePct}%)
+              </p>
             </div>
           </div>
         </div>
 
         {/* Overall Feature Importance */}
-        <div className="rounded-xl p-6 mb-8" style={{ border: `1px solid ${BORDER_RGBA}`, backgroundColor: PALETTE.WHITE }}>
-          <h2 className="text-2xl font-bold mb-6">Overall Feature Importance</h2>
+        <div
+          className="rounded-xl p-6 mb-8"
+          style={{
+            border: `1px solid ${BORDER_RGBA}`,
+            backgroundColor: PALETTE.WHITE,
+          }}
+        >
+          <h2 className="text-2xl font-bold mb-6">
+            Overall Feature Importance
+          </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Bar Chart */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">Importance Distribution</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Importance Distribution
+              </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={overallFeatureData}>
                   <CartesianGrid strokeDasharray="3 3" stroke={BORDER_RGBA} />
-                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} tick={tickStyle} />
+                  <XAxis
+                    dataKey="name"
+                    angle={-45}
+                    textAnchor="end"
+                    height={100}
+                    tick={tickStyle}
+                  />
                   <YAxis tick={tickStyle} />
-                  <Tooltip formatter={(v: any) => `${(Number(v) * 100).toFixed(1)}%`} />
+                  <Tooltip
+                    formatter={(v: any) => `${(Number(v) * 100).toFixed(1)}%`}
+                  />
                   <Bar dataKey="importance" fill={PALETTE.TEAL} />
                 </BarChart>
               </ResponsiveContainer>
@@ -219,14 +304,23 @@ const InterchangeFeeReport: React.FC = () => {
                 <PieChart>
                   <Pie
                     data={overallFeatureData.filter((d) => d.importance > 0.01)}
-                    cx="50%" cy="50%" outerRadius={80} dataKey="importance"
-                    label={({ name, value }) => `${name}: ${(Number(value) * 100).toFixed(1)}%`}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    dataKey="importance"
+                    label={({ name, value }) =>
+                      `${name}: ${(Number(value) * 100).toFixed(1)}%`
+                    }
                   >
                     {overallFeatureData.map((_, i) => (
                       <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: any) => `${(Number(value) * 100).toFixed(2)}%`} />
+                  <Tooltip
+                    formatter={(value: any) =>
+                      `${(Number(value) * 100).toFixed(2)}%`
+                    }
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -234,33 +328,73 @@ const InterchangeFeeReport: React.FC = () => {
 
           {/* Feature Details Table */}
           <div className="mt-8">
-            <h3 className="text-lg font-semibold mb-4">Feature Analysis Details</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              Feature Analysis Details
+            </h3>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse" style={{ border: `1px solid ${BORDER_RGBA}` }}>
+              <table
+                className="w-full border-collapse"
+                style={{ border: `1px solid ${BORDER_RGBA}` }}
+              >
                 <thead>
                   <tr style={{ backgroundColor: PALETTE.WHITE }}>
-                    <th className="px-4 py-2 text-left" style={{ borderBottom: `1px solid ${BORDER_RGBA}` }}>Feature</th>
-                    <th className="px-4 py-2 text-left" style={{ borderBottom: `1px solid ${BORDER_RGBA}` }}>Importance</th>
-                    <th className="px-4 py-2 text-left" style={{ borderBottom: `1px solid ${BORDER_RGBA}` }}>Business Impact</th>
+                    <th
+                      className="px-4 py-2 text-left"
+                      style={{ borderBottom: `1px solid ${BORDER_RGBA}` }}
+                    >
+                      Feature
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left"
+                      style={{ borderBottom: `1px solid ${BORDER_RGBA}` }}
+                    >
+                      Importance
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left"
+                      style={{ borderBottom: `1px solid ${BORDER_RGBA}` }}
+                    >
+                      Business Impact
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.overall.features.map((feature, index) => {
-                    const importance = parseFloat(feature.importance_normalized);
+                    const importance = parseFloat(
+                      feature.importance_normalized
+                    );
                     return (
                       <tr key={index}>
-                        <td className="px-4 py-2 font-medium" style={{ borderTop: `1px solid ${BORDER_RGBA}` }}>
+                        <td
+                          className="px-4 py-2 font-medium"
+                          style={{ borderTop: `1px solid ${BORDER_RGBA}` }}
+                        >
                           {formatFeatureName(feature.feature_name)}
                         </td>
-                        <td className="px-4 py-2" style={{ borderTop: `1px solid ${BORDER_RGBA}` }}>
+                        <td
+                          className="px-4 py-2"
+                          style={{ borderTop: `1px solid ${BORDER_RGBA}` }}
+                        >
                           <div className="flex items-center">
-                            <div className="w-16 h-2 mr-2 rounded-full" style={{ backgroundColor: BORDER_RGBA }}>
-                              <div className="h-2 rounded-full" style={{ width: `${importance * 100}%`, backgroundColor: PALETTE.BLUE }} />
+                            <div
+                              className="w-16 h-2 mr-2 rounded-full"
+                              style={{ backgroundColor: BORDER_RGBA }}
+                            >
+                              <div
+                                className="h-2 rounded-full"
+                                style={{
+                                  width: `${importance * 100}%`,
+                                  backgroundColor: PALETTE.BLUE,
+                                }}
+                              />
                             </div>
                             {(importance * 100).toFixed(1)}%
                           </div>
                         </td>
-                        <td className="px-4 py-2 text-sm" style={{ borderTop: `1px solid ${BORDER_RGBA}` }}>
+                        <td
+                          className="px-4 py-2 text-sm"
+                          style={{ borderTop: `1px solid ${BORDER_RGBA}` }}
+                        >
                           {feature.feature_reason}
                         </td>
                       </tr>
@@ -273,14 +407,28 @@ const InterchangeFeeReport: React.FC = () => {
         </div>
 
         {/* Transaction Analysis */}
-        <div className="rounded-xl p-6 mb-8" style={{ border: `1px solid ${BORDER_RGBA}`, backgroundColor: PALETTE.WHITE }}>
-          <h2 className="text-2xl font-bold mb-6">Transaction-Level Analysis</h2>
+        <div
+          className="rounded-xl p-6 mb-8"
+          style={{
+            border: `1px solid ${BORDER_RGBA}`,
+            backgroundColor: PALETTE.WHITE,
+          }}
+        >
+          <h2 className="text-2xl font-bold mb-6">
+            Transaction-Level Analysis
+          </h2>
 
           {/* Individual Transaction Details */}
           <div className="space-y-6">
             {data.per_transaction.map((t, idx) => (
-              <div key={idx} className="rounded-lg p-6" style={{ border: `1px solid ${BORDER_RGBA}` }}>
-                <h3 className="text-xl font-semibold mb-4">Transaction {parseInt(t.transaction_index) + 1} Analysis</h3>
+              <div
+                key={idx}
+                className="rounded-lg p-6"
+                style={{ border: `1px solid ${BORDER_RGBA}` }}
+              >
+                <h3 className="text-xl font-semibold mb-4">
+                  Transaction {parseInt(t.transaction_index) + 1} Analysis
+                </h3>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Key Features */}
@@ -288,14 +436,31 @@ const InterchangeFeeReport: React.FC = () => {
                     <h4 className="font-semibold mb-3">Key Features</h4>
                     <div className="space-y-3">
                       {t.transaction_features.map((f, i) => (
-                        <div key={i} className="rounded-lg p-3" style={{ backgroundColor: PALETTE.WHITE, border: `1px solid ${BORDER_RGBA}` }}>
+                        <div
+                          key={i}
+                          className="rounded-lg p-3"
+                          style={{
+                            backgroundColor: PALETTE.WHITE,
+                            border: `1px solid ${BORDER_RGBA}`,
+                          }}
+                        >
                           <div className="flex justify-between items-center mb-2">
-                            <span className="font-medium text-sm">{formatFeatureName(f.feature_name)}</span>
-                            <span className="text-lg font-bold" style={{ color: PALETTE.TEAL }}>
-                              {(parseFloat(f.importance_normalized) * 100).toFixed(1)}%
+                            <span className="font-medium text-sm">
+                              {formatFeatureName(f.feature_name)}
+                            </span>
+                            <span
+                              className="text-lg font-bold"
+                              style={{ color: PALETTE.TEAL }}
+                            >
+                              {(
+                                parseFloat(f.importance_normalized) * 100
+                              ).toFixed(1)}
+                              %
                             </span>
                           </div>
-                          <div className="text-xs mb-2"><strong>Value:</strong> {f.feature_value}</div>
+                          <div className="text-xs mb-2">
+                            <strong>Value:</strong> {f.feature_value}
+                          </div>
                           <div className="text-xs">{f.feature_reason}</div>
                         </div>
                       ))}
@@ -305,23 +470,38 @@ const InterchangeFeeReport: React.FC = () => {
                   {/* Transaction Summary */}
                   <div>
                     <h4 className="font-semibold mb-3">Transaction Summary</h4>
-                    <div className="rounded-lg p-4" style={{ backgroundColor: PALETTE.WHITE, border: `1px solid ${BORDER_RGBA}` }}>
+                    <div
+                      className="rounded-lg p-4"
+                      style={{
+                        backgroundColor: PALETTE.WHITE,
+                        border: `1px solid ${BORDER_RGBA}`,
+                      }}
+                    >
                       {/* Total Risk Score removed as requested */}
                       <div className="mb-3">
                         <span className="text-sm">Active Features:</span>
-                        <span className="text-lg font-semibold" style={{ marginLeft: 8 }}>
+                        <span
+                          className="text-lg font-semibold"
+                          style={{ marginLeft: 8 }}
+                        >
                           {t.transaction_features.length}
                         </span>
                       </div>
                       <div className="mb-3">
                         <span className="text-sm">Predicted Fee:</span>
-                        <span className="text-lg font-semibold" style={{ marginLeft: 8, color: PALETTE.TEAL }}>
+                        <span
+                          className="text-lg font-semibold"
+                          style={{ marginLeft: 8, color: PALETTE.TEAL }}
+                        >
                           {t.predicted_fee} RON
                         </span>
                       </div>
                       <div className="mb-3">
                         <span className="text-sm">Actual Fee:</span>
-                        <span className="text-lg font-semibold" style={{ marginLeft: 8, color: PALETTE.BLUE }}>
+                        <span
+                          className="text-lg font-semibold"
+                          style={{ marginLeft: 8, color: PALETTE.BLUE }}
+                        >
                           {t.actual_fee} RON
                         </span>
                       </div>
@@ -330,8 +510,10 @@ const InterchangeFeeReport: React.FC = () => {
                         <span
                           className="ml-2 px-2 py-1 rounded text-xs font-semibold"
                           style={{
-                            backgroundColor: t.downgrade ? PALETTE.ORANGE : PALETTE.TEAL,
-                            color: PALETTE.WHITE
+                            backgroundColor: t.downgrade
+                              ? PALETTE.ORANGE
+                              : PALETTE.TEAL,
+                            color: PALETTE.WHITE,
                           }}
                         >
                           {t.downgrade ? "True" : "False"}
@@ -347,11 +529,22 @@ const InterchangeFeeReport: React.FC = () => {
         </div>
 
         {/* Insights & Recommendations */}
-        <div className="rounded-xl p-6" style={{ border: `1px solid ${BORDER_RGBA}`, backgroundColor: PALETTE.WHITE }}>
-          <h2 className="text-2xl font-bold mb-6">Key Insights & Recommendations</h2>
+        <div
+          className="rounded-xl p-6"
+          style={{
+            border: `1px solid ${BORDER_RGBA}`,
+            backgroundColor: PALETTE.WHITE,
+          }}
+        >
+          <h2 className="text-2xl font-bold mb-6">
+            Key Insights & Recommendations
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="rounded-lg p-4" style={{ backgroundColor: PALETTE.ORANGE, color: PALETTE.WHITE }}>
+            <div
+              className="rounded-lg p-4"
+              style={{ backgroundColor: PALETTE.ORANGE, color: PALETTE.WHITE }}
+            >
               <h3 className="font-semibold mb-2">🔍 Primary Risk Drivers</h3>
               <ul className="text-sm space-y-1">
                 <li>• Channel Type dominates with 65% importance</li>
@@ -360,8 +553,13 @@ const InterchangeFeeReport: React.FC = () => {
               </ul>
             </div>
 
-            <div className="rounded-lg p-4" style={{ backgroundColor: PALETTE.TEAL, color: PALETTE.WHITE }}>
-              <h3 className="font-semibold mb-2">💡 Optimization Opportunities</h3>
+            <div
+              className="rounded-lg p-4"
+              style={{ backgroundColor: PALETTE.TEAL, color: PALETTE.WHITE }}
+            >
+              <h3 className="font-semibold mb-2">
+                💡 Optimization Opportunities
+              </h3>
               <ul className="text-sm space-y-1">
                 <li>• Implement stronger CVV2 validation processes</li>
                 <li>• Focus on channel-specific fraud prevention</li>
@@ -369,7 +567,13 @@ const InterchangeFeeReport: React.FC = () => {
               </ul>
             </div>
 
-            <div className="rounded-lg p-4" style={{ backgroundColor: PALETTE.CHARCOAL, color: PALETTE.WHITE }}>
+            <div
+              className="rounded-lg p-4"
+              style={{
+                backgroundColor: PALETTE.CHARCOAL,
+                color: PALETTE.WHITE,
+              }}
+            >
               <h3 className="font-semibold mb-2">📊 Transaction Patterns</h3>
               <ul className="text-sm space-y-1">
                 <li>• E-commerce transactions show higher risk profiles</li>
@@ -378,7 +582,10 @@ const InterchangeFeeReport: React.FC = () => {
               </ul>
             </div>
 
-            <div className="rounded-lg p-4" style={{ backgroundColor: PALETTE.BLUE, color: PALETTE.WHITE }}>
+            <div
+              className="rounded-lg p-4"
+              style={{ backgroundColor: PALETTE.BLUE, color: PALETTE.WHITE }}
+            >
               <h3 className="font-semibold mb-2">🎯 Strategic Focus Areas</h3>
               <ul className="text-sm space-y-1">
                 <li>• Invest in channel security improvements</li>
