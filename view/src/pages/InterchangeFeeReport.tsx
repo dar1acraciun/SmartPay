@@ -139,17 +139,6 @@ const InterchangeFeeReport: React.FC = () => {
     reason: f.feature_reason
   }));
 
-  const transactionComparisonData = data.per_transaction.map((t) => {
-    const totalImportance = t.transaction_features.reduce(
-      (sum, f) => sum + parseFloat(f.importance_normalized), 0
-    );
-    return {
-      name: `Transaction ${parseInt(t.transaction_index) + 1}`,
-      importance: totalImportance,
-      features: t.transaction_features.length
-    };
-  });
-
   const PIE_COLORS = [PALETTE.ORANGE, PALETTE.TEAL, PALETTE.BLUE, PALETTE.CHARCOAL];
   const tickStyle = { fill: PALETTE.CHARCOAL };
 
@@ -286,25 +275,6 @@ const InterchangeFeeReport: React.FC = () => {
         <div className="rounded-xl p-6 mb-8" style={{ border: `1px solid ${BORDER_RGBA}`, backgroundColor: PALETTE.WHITE }}>
           <h2 className="text-2xl font-bold mb-6">Transaction-Level Analysis</h2>
 
-          {/* Transaction Comparison */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">Transaction Risk Comparison</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={transactionComparisonData}>
-                <CartesianGrid strokeDasharray="3 3" stroke={BORDER_RGBA} />
-                <XAxis dataKey="name" tick={tickStyle} />
-                <YAxis tick={tickStyle} />
-                <Tooltip
-                  formatter={(value: any, name: any) => [
-                    name === "importance" ? `${(Number(value) * 100).toFixed(1)}%` : value,
-                    name === "importance" ? "Total Risk Score" : "Features Count"
-                  ]}
-                />
-                <Bar dataKey="importance" name="importance" fill={PALETTE.BLUE} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
           {/* Individual Transaction Details */}
           <div className="space-y-6">
             {data.per_transaction.map((t, idx) => (
@@ -335,12 +305,7 @@ const InterchangeFeeReport: React.FC = () => {
                   <div>
                     <h4 className="font-semibold mb-3">Transaction Summary</h4>
                     <div className="rounded-lg p-4" style={{ backgroundColor: PALETTE.WHITE, border: `1px solid ${BORDER_RGBA}` }}>
-                      <div className="mb-3">
-                        <span className="text-sm">Total Risk Score:</span>
-                        <span className="text-2xl font-bold" style={{ color: PALETTE.BLUE, marginLeft: 8 }}>
-                          {(t.transaction_features.reduce((s, f) => s + parseFloat(f.importance_normalized), 0) * 100).toFixed(1)}%
-                        </span>
-                      </div>
+                      {/* Total Risk Score removed as requested */}
                       <div className="mb-3">
                         <span className="text-sm">Active Features:</span>
                         <span className="text-lg font-semibold" style={{ marginLeft: 8 }}>
