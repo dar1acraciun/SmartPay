@@ -261,7 +261,7 @@ const InterQAdvisor = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${type}_transaction_format_template.csv`;
+    a.download = `${type}_template.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

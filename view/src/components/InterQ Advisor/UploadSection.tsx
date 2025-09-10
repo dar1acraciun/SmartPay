@@ -101,15 +101,14 @@ const UploadSection = ({
                     className="flex items-center gap-2"
                   >
                     <CreditCard className="h-4 w-4" />
-                    Visa Format (first column must start with <code>visa_</code>)
+                    Visa Format
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onDownloadFormat("mastercard")}
                     className="flex items-center gap-2"
                   >
                     <CreditCard className="h-4 w-4" />
-                    Mastercard Format (first column must start with{" "}
-                    <code>mc_</code>)
+                    Mastercard Format
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
